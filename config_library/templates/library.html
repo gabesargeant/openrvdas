@@ -1,0 +1,19 @@
+<h1>Create a Collection in the Amazing Library</h1>
+<hr>
+
+<form method="POST" enctype="multipart/form-data" action="">
+    {% csrf_token %}
+    <table>
+        {{ form.as_table }}
+        <tr>
+            <td></td>
+            <td><input type="submit" name="submit" value="Submit" /></td>
+        </tr>
+    </table>
+</form>
+<hr>
+{%for c in collections %}
+<ul>
+    <li>{{c.collection_name}} | {{c.description}}</li>
+</ul>
+{%endfor%}

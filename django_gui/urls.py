@@ -14,12 +14,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+
 from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
-
-
-
-
 
 from django.conf import settings
 from django.conf.urls.static import static
@@ -32,6 +29,8 @@ urlpatterns = [
 
     path('', views.index, name='index'),
     path('admin/', admin.site.urls),
+    path('z/', include('config_library.urls')),
+    
     path('accounts/', include('django.contrib.auth.urls')),
     # path('login/', auth_views.login, name='login'),
     # path('logout/', auth_views.logout,
