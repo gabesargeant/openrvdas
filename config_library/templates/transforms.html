@@ -1,0 +1,61 @@
+<html>
+
+<body>
+    <h1>Transform Form</h1>
+    <hr>
+    <form method="post" id="transform-form">
+        <table>
+            {% csrf_token %}
+            <tr>
+                <td> {{ form.as_table }}</td>
+            </tr>
+            <div id="formset-container">
+                {{ formset.management_form }}
+                <div id="formset">
+                    {% for subform in formset %}
+
+                    <div class="subform">
+                        <tr>
+                            <td>key</td>
+                            <td>{{ subform.key}}</td>
+                            <td>value</td>
+                            <td>{{ subform.value}}</td>
+                            <td>type</td>
+                            <td>{{ subform.type}}</td>
+                        </tr>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <tr>
+                <td> <button type="button" id="add-subform">Add Key-Value Pair</button></td>
+                <td><button type="submit">Submit</button></td>
+            </tr>
+        </table>
+    </form>
+</body>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const addButton = document.getElementById('add-subform');
+        const formset = document.getElementById('formset');
+        const TOTAL_FORMS = parseInt(document.getElementById('id_key_values-TOTAL_FORMS').value);
+        let formIndex = TOTAL_FORMS;
+
+        addButton.addEventListener('click', function () {
+            const subform = document.createElement('div');
+            subform.classList.add('subform');
+            subform.innerHTML = formset.querySelector('.subform').innerHTML;
+            const inputs = subform.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                const newName = input.name.replace(/-\d+-/, `-${formIndex}-`);
+                input.name = newName;
+                input.value = '';
+            });
+            formset.appendChild(subform);
+            formIndex++;
+            document.getElementById('id_key_values-TOTAL_FORMS').value = formIndex;
+        });
+    });
+</script>
+
+</html>
