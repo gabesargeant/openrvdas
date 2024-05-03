@@ -1,11 +1,9 @@
 from django.db import models
 
-class LibraryCollection(models.Model):
-    
+class LibraryCollection(models.Model):    
     collection_name = models.CharField(primary_key=True, max_length=100, null=False)
     description = models.TextField(blank=True, null=True)
-
-
+    
 
 #This is a helper for the kv_store
 class TypeChoices(models.TextChoices):
@@ -15,21 +13,25 @@ class TypeChoices(models.TextChoices):
 
 class Transforms(models.Model):
     transform_id = models.AutoField(primary_key=True)
-    transform_name = models.CharField(blank=False, max_length=256) 
+    name = models.CharField(blank=False, max_length=256) 
+    description = models.TextField(blank=True, null=True)
     
 class ComposedWriters():
     #I Hate these
     composed_writer_id = models.AutoField(primary_key=True)
-    composed_writer_name = models.CharField(blank=False, max_length=256) 
+    name = models.CharField(blank=False, max_length=256) 
+    description = models.TextField(blank=True, null=True)
    
 class Readers(models.Model):
     reader_id = models.AutoField(primary_key=True)
-    reader_name = models.CharField(blank=False, max_length=256) 
+    name = models.CharField(blank=False, max_length=256)
+    description = models.TextField(blank=True, null=True)
     
 
 class Writers(models.Model):
     writer_id = models.AutoField(primary_key=True)
-    writer_name = models.CharField(blank=False, max_length=256) 
+    name = models.CharField(blank=False, max_length=256) 
+    description = models.TextField(blank=True, null=True)
     
 
 

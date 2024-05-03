@@ -6,31 +6,52 @@
     <form method="post" id="transform-form">
         <table>
             {% csrf_token %}
+
             <tr>
-                <td> {{ form.as_table }}</td>
+
             </tr>
+            <tr>
+                <td>name</td>
+                <td>{{form.name}}</td>
+            </tr>
+            <tr>
+                <td>description</td>
+                <td>{{form.description}}</td>
+            </tr>
+
+
             <div id="formset-container">
                 {{ formset.management_form }}
-                <div id="formset">
+                <tbody id="formset">
+                    <tr>
+                        <td></td>
+                        <td>KEY</td>
+                        <td>VALUE</td>
+                        <td>TYPE</td>
+                        <td>DELETE</td>
+                        <td></td>
+                    </tr>
                     {% for subform in formset %}
 
-                    <div class="subform">
-                        <tr>
-                            <td>key</td>
-                            <td>{{ subform.key}}</td>
-                            <td>value</td>
-                            <td>{{ subform.value}}</td>
-                            <td>type</td>
-                            <td>{{ subform.type}}</td>
-                        </tr>
-                    </div>
+                    <tr>
+
+
+                        <td>{{subform.kv_id}}</td>
+                        <td>{{subform.key}}</td>
+                        <td>{{subform.value}}</td>
+                        <td>{{subform.type}}</td>
+                        <td>{{subform.DELETE}}</td>
+                        <td>{{subform.transform}}</td>
+                    </tr>
                     {% endfor %}
-                </div>
+                </tbody>
             </div>
-            <tr>
-                <td> <button type="button" id="add-subform">Add Key-Value Pair</button></td>
-                <td><button type="submit">Submit</button></td>
-            </tr>
+            <tfoot>
+                <tr>
+                    <td> <button type="button" id="add-subform">Add Key-Value Pair</button></td>
+                    <td><button type="submit">Submit</button></td>
+                </tr>
+            </tfoot>
         </table>
     </form>
 </body>
@@ -42,10 +63,12 @@
         let formIndex = TOTAL_FORMS;
 
         addButton.addEventListener('click', function () {
-            const subform = document.createElement('div');
+            const subform = document.createElement('tr');
             subform.classList.add('subform');
             subform.innerHTML = formset.querySelector('.subform').innerHTML;
-            const inputs = subform.querySelectorAll('input, select');
+            const inputs = subform.querySelectorAll("input", "select");
+            console.log(inputs)
+
             inputs.forEach(input => {
                 const newName = input.name.replace(/-\d+-/, `-${formIndex}-`);
                 input.name = newName;

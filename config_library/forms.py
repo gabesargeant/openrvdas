@@ -8,13 +8,11 @@ class LibraryCollectionForm(forms.ModelForm):
         
 
 class TransformsForm(forms.ModelForm):
+    transform_id = forms.IntegerField(widget=forms.TextInput(attrs={'readonly': 'readonly'}))
+    
     class Meta:
         model = Transforms
-        fields = "__all__"
-        # widgets = {
-        #     "value": forms.TextInput(),
-        #     "key": forms.TextInput(),
-        # }
+        fields = ['transform_id', 'name', 'description']
 
 class TransformKVForm(forms.ModelForm):
     class Meta:
