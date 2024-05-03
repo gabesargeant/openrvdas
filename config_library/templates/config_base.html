@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+
+<head>
+
+</head>
+
+<body>
+
+    <div style="flex-direction: row; display: flex;">
+        <div style="align-self:baseline">
+            <a href="{% url 'config_library:index' %}">Index</a>
+
+        </div>
+        <div>
+            <h1 style="color:white">Open RVDAS Config Library</h1>
+        </div>
+    </div>
+
+    <div>
+        {% block content %}
+
+        {% endblock %}
+    </div>
+</body>
+
+</html>

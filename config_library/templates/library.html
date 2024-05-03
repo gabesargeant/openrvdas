@@ -1,3 +1,5 @@
+{% extends 'config_base.html' %}
+{% block content %}
 <h1>Create a Collection in the Amazing Library</h1>
 <hr>
 
@@ -17,3 +19,4 @@
     <li>{{c.collection_name}} | {{c.description}}</li>
 </ul>
 {%endfor%}
+{% endblock %}

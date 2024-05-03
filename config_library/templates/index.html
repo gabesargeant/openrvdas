@@ -1,12 +1,9 @@
-<html>
-
-<body>
-    <h1>Config Library Home</h1>
-    <ol>
-        <li><a href=" {% url 'config_library:library' %}">Library</a></li>
-        <li><a href=" {% url 'config_library:transforms' %}">List Transforms</a></li>
-        <li><a href=" {% url 'config_library:create_update_transform' %}">Create A Transform</a></li>
-    </ol>
-</body>
-
-</html>
+{% extends 'config_base.html' %}
+{% block content %}
+<h1>Config Library Home</h1>
+<ol>
+    <li><a href=" {% url 'config_library:library' %}">Library</a></li>
+    <li><a href=" {% url 'config_library:transforms' %}">List Transforms</a></li>
+    <li><a href=" {% url 'config_library:create_update_transform' %}">Create A Transform</a></li>
+</ol>
+{% endblock %}

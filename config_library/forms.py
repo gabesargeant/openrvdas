@@ -8,7 +8,7 @@ class LibraryCollectionForm(forms.ModelForm):
         
 
 class TransformsForm(forms.ModelForm):
-    transform_id = forms.IntegerField(widget=forms.TextInput(attrs={'readonly': 'readonly'}))
+    
     
     class Meta:
         model = Transforms
@@ -22,6 +22,7 @@ class TransformKVForm(forms.ModelForm):
             "value": forms.TextInput(),
             "key": forms.TextInput(),
         }
+        
 
 TransformKVFormSet = forms.inlineformset_factory(
     Transforms, TransformKVStore, form=TransformKVForm, extra=1

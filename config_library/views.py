@@ -22,28 +22,36 @@ def library(request):
 def create_update_transform(request, transform_id=None):
 
     if request.method == 'POST':
-                
-        form = TransformsForm(request.POST)
-        instance =  get_object_or_404(Transforms, transform_id=form.data.get('transform_id')[0])
-        form = TransformsForm(request.POST, instance=instance)
-        formset = TransformKVFormSet(request.POST, instance=instance)
-
+        
+        if transform_id is not None:
+            instance =  get_object_or_404(Transforms, transform_id=transform_id)
+            form = TransformsForm(request.POST, instance=instance)
+            formset = TransformKVFormSet(request.POST, instance=instance)
+        else:
+            form = TransformsForm(request.POST)        
+            formset = TransformKVFormSet(request.POST)
+            
+        
         
         if form.is_valid() and formset.is_valid():
         
             transform = form.save(commit=False)
             transform.save()
-            instances = formset.save(commit=False)
+            formset.save(commit=False)
         
-            for instance in instances:
-                print(instance)
-                
+            for form_instance in formset:
+                print(form_instance.cleaned_data)
+                if 'DELETE' in form_instance.cleaned_data and form_instance.cleaned_data['DELETE'] == True:
+                    form_instance.instance.delete()
+                    continue
+               
+                instance = form_instance.instance
                 instance.transform = transform  # Set the foreign key relationship
                 instance.save()  # Save the related object
 
             formset.save_m2m()
         
-            return redirect('config_library:transforms')  # Redirect to a success URL
+            return redirect('config_library:create_update_transform', transform_id=transform_id)  # Redirect to a success URL
         else:
             print(form.errors)
             print(formset.errors)
