@@ -25,5 +25,14 @@ class TransformKVForm(forms.ModelForm):
         
 
 TransformKVFormSet = forms.inlineformset_factory(
-    Transforms, TransformKVStore, form=TransformKVForm, extra=1
+    Transforms, TransformKVStore, form=TransformKVForm, extra=1, min_num=0
 )
+
+class DeleteTransformForm(forms.ModelForm):
+    transform_id = forms.IntegerField(widget=forms.HiddenInput())
+    class Meta:
+        model = Transforms
+        fields = ['transform_id']
+        widgets = {
+            'transform_id': forms.HiddenInput(),
+        }

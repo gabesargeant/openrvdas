@@ -1,0 +1,39 @@
+{% extends 'config_base.html' %}
+{% block content %}
+<h1>Transforms, that exist</h1>
+<hr>
+<table style="border: solid 1px black ;">
+
+    <tr>
+        <td>Transform ID</td>
+        <td>Name </td>
+        <td>Description </td>
+        <td>Delete?</td>
+    </tr>
+    {% for t in transforms %}
+    <tr>
+
+        <td>{{t.transforms.transform_id}}</td>
+        <td>{{t.transforms.name}}</td>
+        <td>{{t.transforms.description}}</td>
+
+        </td>
+        <td>
+            <form method="post">
+                {%csrf_token%}
+                {{t.delete_form}}
+                <button type="submit">Submit</button>
+            </form>
+        </td>
+
+
+
+
+        </td>
+    </tr>
+    {%endfor%}
+
+
+</table>
+
+{% endblock %}
