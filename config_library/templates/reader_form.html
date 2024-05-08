@@ -1,0 +1,98 @@
+{% extends 'config_base.html' %}
+{% block content %}
+<h1>Cached Data Reader Builder Form</h1>
+<hr>
+<div style="display: flex; width:100%; gap: 10px;">
+    <div>
+        <form method="post" id="reader_form">
+            <table>
+                {% csrf_token %}
+
+                {{form.as_table}}
+            </table>
+
+            {% for f in formsets %}
+
+            <h4>{{f.name}}:</h4>
+
+            <table id="{{f.name}}-formset-container">
+                <tr>
+                    {{ f.formset.management_form }}
+                </tr>
+                <tbody id="formset-{{f.name}}">
+
+
+                    {% for subform in f.formset %}
+                    <tr class="subform-{{f.name}}" id="formset-{{f.name}}-{{forloop.index0}}">
+                        <td>
+                            <table>
+                                {% for field in subform.visible_fields %}
+                                <tr>
+                                    <th>{{ field.label_tag }}</th>
+                                    <td>
+                                        {{ field.errors }}
+                                        {{ field }}
+                                        {{ field.help_text }}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+
+                            </table>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tr>
+                </tbody>
+                <button id="{{f.name}}" type="button" id="add-subform" onclick="add_formset(this.id);">Add Key-Value Pair</button><br>
+                {% endfor %}
+                <input type="hidden" name="_method" value="PATCH">
+                <button type="submit">Submit to render</button>
+            </table>
+        </form>
+    </div>
+    <div>
+        <table>
+            <tr>
+                <td>YAML</td>
+                <td>JSON</td>
+            </tr>
+            <tr>
+                <td><textarea cols="80" rows="20">{{yaml_object}}</textarea></td>
+                <td><textarea cols="80" rows="20">{{json_object}}</textarea></td>
+            </tr>
+        </table>
+    </div>
+
+</div>
+
+
+</body>
+<script>
+
+    function add_formset(e) {
+
+
+        const formset = document.getElementById('formset-' + e);
+        const TOTAL_FORMS = parseInt(document.getElementById('id_' + e + '-TOTAL_FORMS').value);
+
+        let formIndex = TOTAL_FORMS;
+        const subform = document.createElement('tr');
+
+        subform.classList.add('subform-' + e)
+        subform.innerHTML = document.getElementById('formset-' + e + '-0').innerHTML;
+
+        const inputs = subform.querySelectorAll("input", "select");
+
+        inputs.forEach(input => {
+            const newName = input.name.replace(/-\d+-/, `-${formIndex}-`);
+            input.name = newName;
+            input.value = '';
+        });
+        formset.appendChild(subform);
+        formIndex++;
+        document.getElementById('id_' + e + '-TOTAL_FORMS').value = formIndex;
+    }
+
+</script>
+
+{% endblock %}

@@ -18,8 +18,9 @@
         <td>{{t.transforms.description}}</td>
 
         </td>
+        <td><a href="{% url 'config_library:transform' transform_id=t.transforms.transform_id %}">Edit</a></td>
         <td>
-            <form method="post">
+            <form method=" post">
                 {%csrf_token%}
                 {{t.delete_form}}
                 <button type="submit">Submit</button>
