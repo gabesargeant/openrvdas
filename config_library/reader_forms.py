@@ -10,7 +10,7 @@ class CachedDataReaderForm(forms.Form):
     #Subscription_fields
 
 class SubscriptionFields(forms.Form):
-    field = forms.CharField(label='field')
-    seconds = forms.IntegerField(label='seconds', initial=0)
+    field = forms.CharField(label='field', required=True)
+    seconds = forms.IntegerField(label='seconds', initial=0, required=False)
     pass
 

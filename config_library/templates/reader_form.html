@@ -23,7 +23,7 @@
 
 
                     {% for subform in f.formset %}
-                    <tr class="subform-{{f.name}}" id="formset-{{f.name}}-{{forloop.index0}}">
+                    <tr class="subform-{{f.name}}" id="formset-{{f.name}}-{{forloop.counter0}}">
                         <td>
                             <table>
                                 {% for field in subform.visible_fields %}
@@ -34,19 +34,36 @@
                                         {{ field }}
                                         {{ field.help_text }}
                                     </td>
+                                    <td>{{subform.hidden_fields.DELETE}}
+                                        {% for hidden in form.hidden_fields %}
+                                        {{ hidden }}
+                                        {% endfor %}
+                                    </td>
                                 </tr>
                                 {% endfor %}
 
                             </table>
                         </td>
+
                     </tr>
                     {% endfor %}
+                    <tr id="subform-{{f.name}}-lastelement">
+                        <td>
+                            <button id="{{f.name}}" type="button" id="add-subform" onclick="add_formset(this.id);">Add Key-Value Pair</button>
+                        </td>
+                    </tr>
                     </tr>
                 </tbody>
-                <button id="{{f.name}}" type="button" id="add-subform" onclick="add_formset(this.id);">Add Key-Value Pair</button><br>
+
                 {% endfor %}
-                <input type="hidden" name="_method" value="PATCH">
-                <button type="submit">Submit to render</button>
+                <tfoot>
+                    <tr>
+                        <td>
+                            <input type="hidden" name="_method" value="PATCH">
+                            <button type="submit">Submit to render</button>
+                        </td>
+                    </tr>
+                </tfoot>
             </table>
         </form>
     </div>
@@ -79,6 +96,7 @@
         const subform = document.createElement('tr');
 
         subform.classList.add('subform-' + e)
+        console.log('formset-' + e + '-0')
         subform.innerHTML = document.getElementById('formset-' + e + '-0').innerHTML;
 
         const inputs = subform.querySelectorAll("input", "select");
@@ -88,10 +106,12 @@
             input.name = newName;
             input.value = '';
         });
-        formset.appendChild(subform);
+        formset.insertBefore(subform, document.getElementById('subform-' + e + '-lastelement'));
+
         formIndex++;
         document.getElementById('id_' + e + '-TOTAL_FORMS').value = formIndex;
     }
+
 
 </script>
 

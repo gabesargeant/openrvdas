@@ -121,7 +121,7 @@ class CachedDataReader(TemplateView):
     template_name = "reader_form.html"
     def get(self, request, *args, **kwargs):
         form = CachedDataReaderForm()
-        subscription_formset = forms.formset_factory(SubscriptionFields)
+        subscription_formset = forms.formset_factory(SubscriptionFields, extra=1, min_num=0)
         subscription = subscription_formset(prefix='subscription')
 
         return render(request, 
@@ -135,6 +135,12 @@ class CachedDataReader(TemplateView):
         method = self.request.POST.get('_method', '').lower()
         if method == 'patch':
             return self.patch( request, *args, **kwargs)
+        
+        #POST, grab the object data data, 
+        # construct the json object 
+
+
+
         
 
     def patch(self, request, *args, **kwargs):
@@ -170,7 +176,9 @@ class CachedDataReader(TemplateView):
         return render(request, 
                       self.template_name, 
                       {'form': form, 'formsets':[
-                          {'name': 'subscription', 'formset': formset},
+                            {'name': 'subscription', 
+                            'formset': formset
+                           },
                           ],
                         'json_object':object_json,
                         'yaml_object':object_yaml
