@@ -2,6 +2,9 @@ import os
 import importlib
 import inspect
 from logger.transforms.transform import Transform
+from logger.readers.reader import Reader
+from logger.listener.listener import Listener
+from logger.writers.writer import Writer
 
 def list_subclasses_and_mixins(base_dir, base_class):
     subclasses_and_mixins = []
@@ -23,8 +26,32 @@ def list_subclasses_and_mixins(base_dir, base_class):
     return subclasses_and_mixins
 
 # Example usage:
-subclasses_and_mixins = list_subclasses_and_mixins('./logger/transforms', Transform)
-for module_name, class_name in subclasses_and_mixins:    
-    print(f"Module: {module_name}, Class: {class_name}")
+name_set = set()
+# subclasses_and_mixins = list_subclasses_and_mixins('./logger/transforms', Transform)
+# for module_name, class_name in subclasses_and_mixins:    
+#     print(f"Module: {module_name}")
+#     name_set.add((module_name, "transform"))
 
-print(len(subclasses_and_mixins) / 2)
+
+# subclasses_and_mixins = list_subclasses_and_mixins('./logger/readers', Reader)
+# for module_name, class_name in subclasses_and_mixins:    
+#     print(f"Module: {module_name}")
+#     name_set.add((module_name, 'reader'))
+
+
+subclasses_and_mixins = list_subclasses_and_mixins('./logger/listener', Listener)
+for module_name, class_name in subclasses_and_mixins:    
+    print(f"Module: {module_name}")
+    name_set.add((module_name, 'listener'))
+
+
+# subclasses_and_mixins = list_subclasses_and_mixins('./logger/writers', Writer)
+# for module_name, class_name in subclasses_and_mixins:    
+#     print(f"Module: {module_name}")
+#     name_set.add((module_name, 'writers'))
+
+
+print(name_set)
+for p in name_set:
+    print(f"{p[0]}, {p[1]}")
+

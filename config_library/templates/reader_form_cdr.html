@@ -84,6 +84,35 @@
 
 
 </body>
+<script>
 
+    function add_formset(e) {
+
+
+        const formset = document.getElementById('formset-' + e);
+        const TOTAL_FORMS = parseInt(document.getElementById('id_' + e + '-TOTAL_FORMS').value);
+
+        let formIndex = TOTAL_FORMS;
+        const subform = document.createElement('tr');
+
+        subform.classList.add('subform-' + e)
+        console.log('formset-' + e + '-0')
+        subform.innerHTML = document.getElementById('formset-' + e + '-0').innerHTML;
+
+        const inputs = subform.querySelectorAll("input", "select");
+
+        inputs.forEach(input => {
+            const newName = input.name.replace(/-\d+-/, `-${formIndex}-`);
+            input.name = newName;
+            input.value = '';
+        });
+        formset.insertBefore(subform, document.getElementById('subform-' + e + '-lastelement'));
+
+        formIndex++;
+        document.getElementById('id_' + e + '-TOTAL_FORMS').value = formIndex;
+    }
+
+
+</script>
 
 {% endblock %}
