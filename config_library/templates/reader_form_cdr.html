@@ -1,11 +1,16 @@
 {% extends 'config_base.html' %}
 {% block content %}
 <h1>Cached Data Reader Builder Form</h1>
+<pre>
+The cached data reader is more complex than regular items and as such the form layout is slightly different.
+As you need to, add KV pairs for the subcription list of dicts.
+</pre>
 <hr>
-<div style="display: flex; width:100%; gap: 10px;">
-    <div>
+
+<div style="display: flex; width:100%; gap: 10px; flex-direction: row;">
+    <div style="display: flex;  gap: 10px; flex-direction: column;">
         <form method="post" id="reader_form">
-            <table>
+            <table class="table-bordered">
                 {% csrf_token %}
 
                 {{form.as_table}}
@@ -19,9 +24,7 @@
                 <tr>
                     {{ f.formset.management_form }}
                 </tr>
-                <tbody id="formset-{{f.name}}">
-
-
+                <tbody id="formset-{{f.name}}" style=" border: 1px solid black;">
                     {% for subform in f.formset %}
                     <tr class="subform-{{f.name}}" id="formset-{{f.name}}-{{forloop.counter0}}">
                         <td>
@@ -33,11 +36,6 @@
                                         {{ field.errors }}
                                         {{ field }}
                                         {{ field.help_text }}
-                                    </td>
-                                    <td>{{subform.hidden_fields.DELETE}}
-                                        {% for hidden in form.hidden_fields %}
-                                        {{ hidden }}
-                                        {% endfor %}
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -68,19 +66,55 @@
         </form>
     </div>
     <div>
-        <table>
-            <tr>
-                <td>YAML</td>
-                <td>JSON</td>
-            </tr>
-            <tr>
-                <td><textarea cols="80" rows="20">{{yaml_object}}</textarea></td>
-                <td><textarea cols="80" rows="20">{{json_object}}</textarea></td>
-            </tr>
-        </table>
+        {% if post_form %} <form method="post">
+
+
+            <div style="display: flex; flex-direction: row; gap: 30px;">
+
+                <div>
+                    <table class="table-bordered">
+                        {% csrf_token %}
+                        {% for field in post_form.visible_fields %}
+                        <tr>
+                            <th>{{ field.label_tag }}</th>
+                            <td>
+                                {{ field.errors }}
+                                {{ field }}
+                                {{ field.help_text }}
+
+                            </td>
+                        </tr>
+
+                        {%endfor%}
+
+                    </table>
+                </div>
+                <div>
+
+
+                    <button type="submit">Save</button>
+                </div>
+
+            </div>
+        </form>
+        {%endif%}
+    </div>
+</div>
+
+
+
+<div style="display: flex; width:100%; gap: 10px; flex-direction: row; flex-wrap: wrap;">
+    <div>
+        YAML<br>
+        <textarea cols="80" rows="20">{{yaml_object}}</textarea>
+    </div>
+    <div>
+        JSON<br>
+        <textarea cols="80" rows="20">{{json_object}}</textarea>
     </div>
 
 </div>
+
 
 
 </body>

@@ -1,86 +1,94 @@
 {% extends 'config_base.html' %}
 {% block content %}
-<h1>Cached Data Reader Builder Form</h1>
+<h1>{{name }} builder Form</h1>
+<pre>
+Note: This form represents the full options available for a reader. 
+None/Null values will be omitted from the generated json/yaml.
+</pre>
 <hr>
-<div style="display: flex; width:100%; gap: 10px;">
-    <div>
-        <form method="post" id="reader_form">
-            <table>
-                {% csrf_token %}
+<div style="display: flex; width:100%; gap: 10px; flex-direction: column;">
+    <div style="display: flex; width:100%; gap: 10px; flex-direction: row;">
+        <form method="post">
+            <div style="display: flex; flex-direction: row; gap: 30px;">
 
-                {{form.as_table}}
-            </table>
-
-            {% for f in formsets %}
-
-            <h4>{{f.name}}:</h4>
-
-            <table id="{{f.name}}-formset-container">
-                <tr>
-                    {{ f.formset.management_form }}
-                </tr>
-                <tbody id="formset-{{f.name}}">
+                <div>
 
 
-                    {% for subform in f.formset %}
-                    <tr class="subform-{{f.name}}" id="formset-{{f.name}}-{{forloop.counter0}}">
-                        <td>
-                            <table>
-                                {% for field in subform.visible_fields %}
-                                <tr>
-                                    <th>{{ field.label_tag }}</th>
-                                    <td>
-                                        {{ field.errors }}
-                                        {{ field }}
-                                        {{ field.help_text }}
-                                    </td>
-                                    <td>{{subform.hidden_fields.DELETE}}
-                                        {% for hidden in form.hidden_fields %}
-                                        {{ hidden }}
-                                        {% endfor %}
-                                    </td>
-                                </tr>
-                                {% endfor %}
+                    <table class="table-bordered">
+                        {% csrf_token %}
+                        {% for field in form.visible_fields %}
+                        <tr>
+                            <th>{{ field.label_tag }}</th>
+                            <td>
+                                {{ field.errors }}
+                                {{ field }}
+                                {{ field.help_text }}
 
-                            </table>
-                        </td>
+                            </td>
+                        </tr>
 
-                    </tr>
-                    {% endfor %}
-                    <tr id="subform-{{f.name}}-lastelement">
-                        <td>
-                            <button id="{{f.name}}" type="button" id="add-subform" onclick="add_formset(this.id);">Add Key-Value Pair</button>
-                        </td>
-                    </tr>
-                    </tr>
-                </tbody>
+                        {%endfor%}
 
-                {% endfor %}
-                <tfoot>
-                    <tr>
-                        <td>
-                            <input type="hidden" name="_method" value="PATCH">
-                            <button type="submit">Submit to render</button>
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
+                    </table>
+
+
+                </div>
+                <div>
+                    <input type="hidden" name="_method" value="PATCH">
+                    <button type="submit">Submit to Preview</button>
+
+                </div>
         </form>
     </div>
     <div>
-        <table>
-            <tr>
-                <td>YAML</td>
-                <td>JSON</td>
-            </tr>
-            <tr>
-                <td><textarea cols="80" rows="20">{{yaml_object}}</textarea></td>
-                <td><textarea cols="80" rows="20">{{json_object}}</textarea></td>
-            </tr>
-        </table>
+        {% if post_form %} <form method="post">
+
+
+            <div style="display: flex; flex-direction: row; gap: 30px;">
+
+                <div>
+                    <table class="table-bordered">
+                        {% csrf_token %}
+                        {% for field in post_form.visible_fields %}
+                        <tr>
+                            <th>{{ field.label_tag }}</th>
+                            <td>
+                                {{ field.errors }}
+                                {{ field }}
+                                {{ field.help_text }}
+
+                            </td>
+                        </tr>
+
+                        {%endfor%}
+
+                    </table>
+                </div>
+                <div>
+
+
+                    <button type="submit">Save</button>
+                </div>
+
+            </div>
+        </form>
+        {%endif%}
+    </div>
+</div>
+
+<div style="display: flex; width:100%; gap: 10px; flex-direction: row; flex-wrap: wrap;">
+    <div>
+        YAML<br>
+        <textarea cols="80" rows="20">{{yaml_object}}</textarea>
+    </div>
+    <div>
+        JSON<br>
+        <textarea cols="80" rows="20">{{json_object}}</textarea>
     </div>
 
 </div>
+
+
 
 
 </body>

@@ -1,11 +1,7 @@
 from django.shortcuts import render, redirect
-from .forms import (
-    LibraryCollectionForm,
-    TransformKVFormSet,
-    TransformsForm,
-    DeleteTransformForm,
-)
-from .models import LibraryCollection, Transforms, TransformKVStore, Writers
+from .forms import LibraryCollectionForm, ConfigObjectStoreForm
+
+from .models import LibraryCollection, ConfigObjectStore
 from django.views.generic import TemplateView
 from django.shortcuts import get_object_or_404
 from .reader_forms import (
@@ -16,16 +12,15 @@ from .reader_forms import (
     ModbusReaderForm,
     MqttReaderForm,
     PolledSerialReaderForm,
-    ReaderForm,
     RedisReaderForm,
     SerialReaderForm,
     TcpReaderForm,
     TextFileReaderForm,
     TimeoutReaderForm,
     UdpReaderForm,
-    WebsocketReaderForm
+    WebsocketReaderForm,
 )
-
+from django.urls import include, path
 from django import forms
 
 import json
@@ -50,8 +45,15 @@ def library(request):
     return render(request, "library.html", {"form": form, "collections": collections})
 
 
-class CachedDataReader(TemplateView):
+
+
+
+
+
+class CachedDataReaderView(TemplateView):
+
     template_name = "reader_form_cdr.html"
+    name = "CachedDataReader"
 
     def get(self, request, *args, **kwargs):
         form = CachedDataReaderForm()
@@ -77,8 +79,11 @@ class CachedDataReader(TemplateView):
         if method == "patch":
             return self.patch(request, *args, **kwargs)
 
-        # POST, grab the object data data,
-        # construct the json object
+        form = ConfigObjectStoreForm(request.POST)
+        if form.is_valid():
+            form.save()
+        
+        return redirect('config_library:index')
 
     def patch(self, request, *args, **kwargs):
         form = CachedDataReaderForm(request.POST, request.FILES)
@@ -88,33 +93,40 @@ class CachedDataReader(TemplateView):
         object = {}
         kwargs = {}
         if form.is_valid() and formset.is_valid():
+            
+            for k, v in form.cleaned_data.items():
+                if k.lower() == "name":
+                    object[k] = v
+                elif k.lower() == "object_class":
+                    object["class"] = v
+                else:
+                    if v is not None:
+                        kwargs[k] = v
 
-            object = {"class": form.cleaned_data.get("object_class", None)}
-            kwargs = {
-                "data_server": form.cleaned_data.get("data_server", None),
-                "use_wss": form.cleaned_data.get("use_wss"),
-                "check_cert": form.cleaned_data.get("check_cert"),
-                "subscription": {},
-            }
+            kwargs['subscription'] = {}
             object["kwargs"] = kwargs
-
-        fields = {}
-        for f in formset:
-            fields.update(
-                {
-                    f.cleaned_data.get("field"): {
-                        "seconds": f.cleaned_data.get("seconds")
-                    }
-                }
-            )
-
-        kwargs["subscription"]["fields"] = fields
-
-        import json
-        import yaml
+            #Don't blame me, blame the subscription object on the cached data reader.
+            fields = {}
+            for subform in formset:
+                sf = subform.cleaned_data                                
+                if sf['field'] is not None:
+                    fields[sf['field']] = {'seconds': sf['seconds']}
+            
+            print(object)
+            object["kwargs"]["subscription"]["fields"] = fields
 
         object_json = json.dumps(object, default=str, indent=2)
-        object_yaml = yaml.dump(object)
+        object_yaml = yaml.dump(object, sort_keys=False)
+
+        # Creat the submission Initial Form (this is the object store, use to add description.)
+        post_form = ConfigObjectStoreForm(
+            initial={
+                "name": object["name"],
+                "class_name": object["class"],
+                "description": "",
+                "json_object": object_json,
+            }
+        )
 
         return render(
             request,
@@ -126,6 +138,7 @@ class CachedDataReader(TemplateView):
                 ],
                 "json_object": object_json,
                 "yaml_object": object_yaml,
+                "post_form": post_form,
             },
         )
 
@@ -134,13 +147,14 @@ class CachedDataReader(TemplateView):
 class ReaderFormView(TemplateView):
     template_name = "reader_form.html"
     reader_form = None
+    name = None
 
     def get(self, request, *args, **kwargs):
         # Handle the lookup.
 
         form = self.reader_form()
 
-        return render(request, self.template_name, {"form": form})
+        return render(request, self.template_name, {"name": self.name, "form": form})
 
     def post(self, request, *args, **kwargs):
 
@@ -148,8 +162,14 @@ class ReaderFormView(TemplateView):
         if method == "patch":
             return self.patch(request, *args, **kwargs)
 
-        # POST, grab the object data data,
-        # construct the json object
+
+        form = ConfigObjectStoreForm(request.POST)
+        if form.is_valid():
+            form.save()
+        
+        return redirect('config_library:index')
+
+
 
     def patch(self, request, *args, **kwargs):
         form = self.reader_form(request.POST)
@@ -162,67 +182,97 @@ class ReaderFormView(TemplateView):
             kwargs = {}
 
             for k, v in form.cleaned_data.items():
-                if k.lower() == "name" or k.lower() == "object_class":
+                if k.lower() == "name":
                     object[k] = v
+                elif k.lower() == "object_class":
+                    object["class"] = v
                 else:
-                    kwargs[k] = v
+                    if v is not None:
+                        kwargs[k] = v
+
+            object["kwargs"] = kwargs
 
         object_json = json.dumps(object, default=str, indent=2)
-        object_yaml = yaml.dump(object)
+        object_yaml = yaml.dump(object, sort_keys=False)
+
+        # Creat the submission Initial Form
+        post_form = ConfigObjectStoreForm(
+            initial={
+                "name": object["name"],
+                "class_name": object["class"],
+                "description": "",
+                "json_object": object_json,
+            }
+        )
 
         return render(
             request,
             self.template_name,
-            {"form": form, "json_object": object_json, "yaml_object": object_yaml},
+            {
+                "name": self.name,
+                "form": form,
+                "json_object": object_json,
+                "yaml_object": object_yaml,
+                "post_form": post_form,
+            },
         )
 
 
 class DatabaseReaderView(ReaderFormView):
     reader_form = DatabaseReaderForm
+    name = "DatabaseReader"
 
 
 class LogFileReaderView(ReaderFormView):
     reader_form = LogFileReaderForm
+    name = "LogFileReader"
 
 
 class ModbusReaderView(ReaderFormView):
     reader_form = ModbusReaderForm
+    name = "ModbusReader"
 
 
 class MqttReaderView(ReaderFormView):
     reader_form = MqttReaderForm
+    name = "MqttReader"
 
 
 class PolledSerialReaderView(ReaderFormView):
     reader_form = PolledSerialReaderForm
-
-
-class ReaderView(ReaderFormView):
-    reader_form = ReaderForm
+    name = "PolledSerialReader"
 
 
 class RedisReaderView(ReaderFormView):
     reader_form = RedisReaderForm
+    name = "RedisReader"
 
 
 class SerialReaderView(ReaderFormView):
     reader_form = SerialReaderForm
+    name = "SerialReader"
 
 
 class TcpReaderView(ReaderFormView):
     reader_form = TcpReaderForm
+    name = "TcpReader"
 
 
 class TextFileReaderView(ReaderFormView):
     reader_form = TextFileReaderForm
+    name = "TextFileReader"
 
 
 class TimeoutReaderView(ReaderFormView):
     reader_form = TimeoutReaderForm
+    name = "TimeoutReader"
 
 
 class UdpReaderView(ReaderFormView):
     reader_form = UdpReaderForm
+    name = "UdpReader"
+
 
 class WebsocketReaderView(ReaderFormView):
     reader_form = WebsocketReaderForm
+    name = "WebsocketReader"

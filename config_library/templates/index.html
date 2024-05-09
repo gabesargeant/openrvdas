@@ -3,7 +3,23 @@
 <h1>Config Library Home</h1>
 <ol>
     <li><a href=" {% url 'config_library:library' %}">Library</a></li>
-    <li><a href=" {% url 'config_library:transforms' %}">List Transforms</a></li>
-    <li><a href=" {% url 'config_library:transform' %}">Create A Transform</a></li>
 </ol>
+
+<h2>Configure a Reader</h2>
+<ul>
+
+    <li><a href=" {% url 'config_library:cached_data_reader' %}">cached_data_reader</a></li>
+    <li><a href=" {% url 'config_library:database_reader' %}">database_reader</a></li>
+    <li><a href=" {% url 'config_library:logfile_reader' %}">logfile_reader</a></li>
+    <li><a href=" {% url 'config_library:modbus_reader' %}">modbus_reader</a></li>
+    <li><a href=" {% url 'config_library:mqtt_reader' %}">mqtt_reader</a></li>
+    <li><a href=" {% url 'config_library:polled_serial_reader' %}">polled_serial_reader</a></li>
+    <li><a href=" {% url 'config_library:redis_reader' %}">redis_reader</a></li>
+    <li><a href=" {% url 'config_library:serial_reader' %}">serial_reader</a></li>
+    <li><a href=" {% url 'config_library:tcp_reader' %}">tcp_reader</a></li>
+    <li><a href=" {% url 'config_library:text_file_reader' %}">text_file_reader</a></li>
+    <li><a href=" {% url 'config_library:timeout_reader' %}">timeout_reader</a></li>
+    <li><a href=" {% url 'config_library:udp_reader' %}">udp_reader</a></li>
+    <li><a href=" {% url 'config_library:websockets_reader' %}">websockets_reader</a></li>
+</ul>
 {% endblock %}

@@ -1,8 +1,10 @@
 from django import forms
-from .models import LibraryCollection, TransformKVStore, Transforms, TypeChoices
+
 
 class CachedDataReaderForm(forms.Form):
     object_class = forms.CharField(label='class', initial='CachedDataReader', disabled=True)
+    name = forms.CharField(required=False)
+    #kwargs
     data_server = forms.CharField(label='data_server', initial='localhost:8766')
     use_wss = forms.BooleanField(label='use_wss', initial=False, required=False)
     check_cert=forms.BooleanField(label='check_cert', initial=False, required=False)  
@@ -10,7 +12,7 @@ class CachedDataReaderForm(forms.Form):
     #Subscription_fields
 
 class SubscriptionFields(forms.Form):
-    field = forms.CharField(label='field', required=True)
+    field = forms.CharField(label='field', required=False)
     seconds = forms.IntegerField(label='seconds', initial=0, required=False)
     pass
 
@@ -110,7 +112,7 @@ class SerialReaderForm(forms.Form):
     object_class = forms.CharField(label='class', initial='SerialReader', disabled=True)
     name = forms.CharField(required=False)
     #kwargs
-    port = forms.CharField()
+    port = forms.CharField(initial=9876)
     baudrate = forms.IntegerField(initial=9600)
     bytesize = forms.IntegerField(initial=8)
     parity = forms.CharField(initial='N')
@@ -175,7 +177,7 @@ class WebsocketReaderForm(forms.Form):
     object_class = forms.CharField(label='class', initial='WebsocketReader', disabled=True)
     name = forms.CharField(required=False)
     #kwargs
-    uri = forms.CharField()
+    uri = forms.CharField(required=False)
     check_cert = forms.BooleanField(required=False, initial=False)
     
 
