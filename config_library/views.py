@@ -20,7 +20,27 @@ from .reader_forms import (
     UdpReaderForm,
     WebsocketReaderForm,
 )
-from django.urls import include, path
+from .transform_forms import (
+   DeltaTransformForm,
+ExtractFieldTransformForm,
+FormatTransformForm,
+FromJsonTransformForm,
+GeofenceTransformForm,
+ParseNmeaTransformForm,
+ParseTransformForm,
+PrefixTransformForm,
+QcFilterTransformForm,
+RegexFilterTransformForm,
+RegexReplaceTransformForm,
+SliceTransformForm,
+SplitTransformForm,
+StripTransformForm,
+TimestampTransformForm,
+ToDasRecordTransformForm,
+ToJsonTransformForm,
+ValueFilterTransformForm,
+XmlAggregatorTransformForm,
+)
 from django import forms
 
 import json
@@ -144,15 +164,18 @@ class CachedDataReaderView(TemplateView):
 
 
 # Base view
-class ReaderFormView(TemplateView):
-    template_name = "reader_form.html"
-    reader_form = None
+class BaseKwargsFormView(TemplateView):
+    #
+    # These three attributes usually get overridden.
+    #    
+    template_name = "kwargs_form.html"
+    kwargs_form = None
     name = None
 
     def get(self, request, *args, **kwargs):
         # Handle the lookup.
 
-        form = self.reader_form()
+        form = self.kwargs_form()
 
         return render(request, self.template_name, {"name": self.name, "form": form})
 
@@ -172,7 +195,7 @@ class ReaderFormView(TemplateView):
 
 
     def patch(self, request, *args, **kwargs):
-        form = self.reader_form(request.POST)
+        form = self.kwargs_form(request.POST)
 
         object = {}
         kwargs = {}
@@ -218,61 +241,144 @@ class ReaderFormView(TemplateView):
         )
 
 
-class DatabaseReaderView(ReaderFormView):
-    reader_form = DatabaseReaderForm
+class DatabaseReaderView(BaseKwargsFormView):
+    kwargs_form = DatabaseReaderForm
     name = "DatabaseReader"
 
 
-class LogFileReaderView(ReaderFormView):
-    reader_form = LogFileReaderForm
+class LogFileReaderView(BaseKwargsFormView):
+    kwargs_form =  LogFileReaderForm
     name = "LogFileReader"
 
 
-class ModbusReaderView(ReaderFormView):
-    reader_form = ModbusReaderForm
+class ModbusReaderView(BaseKwargsFormView):
+    kwargs_form =  ModbusReaderForm
     name = "ModbusReader"
 
 
-class MqttReaderView(ReaderFormView):
-    reader_form = MqttReaderForm
+class MqttReaderView(BaseKwargsFormView):
+    kwargs_form =  MqttReaderForm
     name = "MqttReader"
 
 
-class PolledSerialReaderView(ReaderFormView):
-    reader_form = PolledSerialReaderForm
+class PolledSerialReaderView(BaseKwargsFormView):
+    kwargs_form =  PolledSerialReaderForm
     name = "PolledSerialReader"
 
 
-class RedisReaderView(ReaderFormView):
-    reader_form = RedisReaderForm
+class RedisReaderView(BaseKwargsFormView):
+    kwargs_form =  RedisReaderForm
     name = "RedisReader"
 
 
-class SerialReaderView(ReaderFormView):
-    reader_form = SerialReaderForm
+class SerialReaderView(BaseKwargsFormView):
+    kwargs_form =  SerialReaderForm
     name = "SerialReader"
 
 
-class TcpReaderView(ReaderFormView):
-    reader_form = TcpReaderForm
+class TcpReaderView(BaseKwargsFormView):
+    kwargs_form =  TcpReaderForm
     name = "TcpReader"
 
 
-class TextFileReaderView(ReaderFormView):
-    reader_form = TextFileReaderForm
+class TextFileReaderView(BaseKwargsFormView):
+    kwargs_form =  TextFileReaderForm
     name = "TextFileReader"
 
 
-class TimeoutReaderView(ReaderFormView):
-    reader_form = TimeoutReaderForm
+class TimeoutReaderView(BaseKwargsFormView):
+    kwargs_form =  TimeoutReaderForm
     name = "TimeoutReader"
 
 
-class UdpReaderView(ReaderFormView):
-    reader_form = UdpReaderForm
+class UdpReaderView(BaseKwargsFormView):
+    kwargs_form =  UdpReaderForm
     name = "UdpReader"
 
 
-class WebsocketReaderView(ReaderFormView):
-    reader_form = WebsocketReaderForm
+class WebsocketReaderView(BaseKwargsFormView):
+    kwargs_form =  WebsocketReaderForm
     name = "WebsocketReader"
+
+
+#
+#
+# TRANSFORMS
+#
+#
+
+
+class DeltaTransformView(BaseKwargsFormView):
+    kwargs_form =  DeltaTransformForm
+    name = "DeltaTransform"
+
+class ExtractFieldTransformView(BaseKwargsFormView):
+    kwargs_form =  ExtractFieldTransformForm
+    name = "ExtractFieldTransform"
+
+class FormatTransformView(BaseKwargsFormView):
+    kwargs_form =  FormatTransformForm
+    name = "FormatTransform"
+
+class FromJsonTransformView(BaseKwargsFormView):
+    kwargs_form =  FromJsonTransformForm
+    name = "FromJsonTransform"
+class GeofenceTransformView(BaseKwargsFormView):
+    kwargs_form =  GeofenceTransformForm
+    name = "GeofenceTransform"
+
+class ParseNmeaTransformView(BaseKwargsFormView):
+    kwargs_form =  ParseNmeaTransformForm
+    name = "ParseNmeaTransform"
+
+class ParseTransformView(BaseKwargsFormView):
+    kwargs_form =  ParseTransformForm
+    name = "ParseTransform"
+
+class PrefixTransformView(BaseKwargsFormView):
+    kwargs_form =  PrefixTransformForm
+    name = "PrefixTransform"
+
+class QcFilterTransformView(BaseKwargsFormView):
+    kwargs_form =  QcFilterTransformForm
+    name = "QcFilterTransform"
+
+class RegexFilterTransformView(BaseKwargsFormView):
+    kwargs_form =  RegexFilterTransformForm
+    name = "RegexFilterTransform"
+
+class RegexReplaceTransformView(BaseKwargsFormView):
+    kwargs_form =  RegexReplaceTransformForm
+    name = "RegexReplaceTransform"
+
+class SliceTransformView(BaseKwargsFormView):
+    kwargs_form =  SliceTransformForm
+    name = "SliceTransform"
+
+class SplitTransformView(BaseKwargsFormView):
+    kwargs_form =  SplitTransformForm
+    name = "SplitTransform"
+
+class StripTransformView(BaseKwargsFormView):
+    kwargs_form =  StripTransformForm
+    name = "StripTransform"
+
+class TimestampTransformView(BaseKwargsFormView):
+    kwargs_form =  TimestampTransformForm
+    name = "TimestampTransform"
+
+class ToDasRecordTransformView(BaseKwargsFormView):
+    kwargs_form =  ToDasRecordTransformForm
+    name = "ToDasRecordTransform"
+
+class ToJsonTransformView(BaseKwargsFormView):
+    kwargs_form =  ToJsonTransformForm
+    name = "ToJsonTransform"
+
+class ValueFilterTransformView(BaseKwargsFormView):
+    kwargs_form =  ValueFilterTransformForm
+    name = "ValueFilterTransform"
+
+class XmlAggregatorTransformView(BaseKwargsFormView):
+    kwargs_form =  XmlAggregatorTransformForm
+    name = "XmlAggregatorTransform"

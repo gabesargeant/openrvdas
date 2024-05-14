@@ -6,6 +6,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from . import views
 
+
 app_name = 'config_library'
 
 urlpatterns = [
@@ -24,4 +25,27 @@ urlpatterns = [
     path('readers/timeout_reader/', views.TimeoutReaderView.as_view(), name='timeout_reader'),
     path('readers/udp_reader/', views.UdpReaderView.as_view(), name='udp_reader'),
     path('readers/websockets_reader/', views.WebsocketReaderView.as_view(), name='websockets_reader'),
+    # Transforms
+    path('transforms/delta_transform/', views.DeltaTransformView.as_view() , name='delta_transform'),
+    path('transforms/extract_field_transform/', views.ExtractFieldTransformView.as_view() , name='extract_field_transform'),
+    path('transforms/format_transform/', views.FormatTransformView.as_view() , name='format_transform'),
+    path('transforms/from_json_transform/', views.FromJsonTransformView.as_view() , name='from_json_transform'),
+    path('transforms/geofence_transform/', views.GeofenceTransformView.as_view() , name='geofence_transform'),
+    path('transforms/parse_nmea_transform/', views.ParseNmeaTransformView.as_view() , name='parse_nmea_transform'),
+    path('transforms/parse_transform/', views.ParseTransformView.as_view() , name='parse_transform'),
+    path('transforms/prefix_transform/', views.PrefixTransformView.as_view() , name='prefix_transform'),
+    path('transforms/qc_filter_transform/', views.QcFilterTransformView.as_view() , name='qc_filter_transform'),
+    path('transforms/regex_filter_transform/', views.RegexFilterTransformView.as_view() , name='regex_filter_transform'),
+    path('transforms/regex_replace_transform/', views.RegexReplaceTransformView.as_view() , name='regex_replace_transform'),
+    path('transforms/slice_transform/', views.SliceTransformView.as_view() , name='slice_transform'),
+    path('transforms/split_transform/', views.SplitTransformView.as_view() , name='split_transform'),
+    path('transforms/strip_transform/', views.StripTransformView.as_view() , name='strip_transform'),
+    path('transforms/timestamp_transform/', views.TimestampTransformView.as_view() , name='timestamp_transform'),
+    path('transforms/to_das_record_transform/', views.ToDasRecordTransformView.as_view() , name='to_das_record_transform'),
+    path('transforms/to_json_transform/', views.ToJsonTransformView.as_view() , name='to_json_transform'),
+    path('transforms/value_filter_transform/', views.ValueFilterTransformView.as_view() , name='value_filter_transform'),
+    path('transforms/xml_aggregator_transform/', views.XmlAggregatorTransformView.as_view() , name='xml_aggregator_transform'),
+
+
+
     ]
