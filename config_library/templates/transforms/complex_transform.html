@@ -1,11 +1,10 @@
 {% extends 'config_base.html' %}
 {% block content %}
-<h1>{{name }} builder Form</h1>
+<h1>{{name}} Form</h1>
 <pre>
-Note: This form represents the full options available for a reader. 
-None/Null values will be omitted from the generated json/yaml.
+The cached data reader is more complex than regular items and as such the form layout is slightly different.
+As you need to, add KV pairs for the subcription list of dicts.
 </pre>
-{{id}}
 <hr>
 <form method="post">
     <div style="display: flex; width:100%; gap: 10px; flex-direction: row;">

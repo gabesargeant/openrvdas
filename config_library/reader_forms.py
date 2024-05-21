@@ -1,9 +1,9 @@
 from django import forms
+from .forms import BaseRVDASConfigForm
 
-
-class CachedDataReaderForm(forms.Form):
+class CachedDataReaderForm(BaseRVDASConfigForm):
     object_class = forms.CharField(label='class', initial='CachedDataReader', disabled=True)
-    name = forms.CharField(required=False)
+    
     #kwargs
     data_server = forms.CharField(label='data_server', initial='localhost:8766')
     use_wss = forms.BooleanField(label='use_wss', initial=False, required=False)
@@ -16,15 +16,14 @@ class SubscriptionFields(forms.Form):
     seconds = forms.IntegerField(label='seconds', initial=0, required=False)
     pass
 
-
 #
 #
 # KWARG FORMS
 #
 #
-class DatabaseReaderForm(forms.Form):    
+class DatabaseReaderForm(BaseRVDASConfigForm):    
     object_class = forms.CharField(label='class', initial='DatabaseReader', disabled=True)
-    name = forms.CharField(required=False)
+    
     #kwargs
     #kwargs
     database = forms.CharField(initial='DEFAULT_DATABASE')
@@ -35,9 +34,9 @@ class DatabaseReaderForm(forms.Form):
     sleep_interval = forms.FloatField(initial=1.0)
 
 
-class LogFileReaderForm(forms.Form):
+class LogFileReaderForm(BaseRVDASConfigForm):
     object_class = forms.CharField(label='class', initial='LogFileReader', disabled=True)
-    name = forms.CharField(required=False)
+    
     #kwargs
     filebase = forms.CharField(required=False)
     tail = forms.BooleanField(required=False, initial=False)
@@ -51,9 +50,9 @@ class LogFileReaderForm(forms.Form):
     eol = forms.CharField(required=False)
     quiet = forms.BooleanField(required=False, initial=False)
 
-class ModbusReaderForm(forms.Form):
+class ModbusReaderForm(BaseRVDASConfigForm):
     object_class = forms.CharField(label='class', initial='ModbusReader', disabled=True)
-    name = forms.CharField(required=False)
+    
     #kwargs
     registers = forms.CharField()
     host = forms.CharField(initial='localhost')
@@ -63,18 +62,18 @@ class ModbusReaderForm(forms.Form):
     encoding = forms.CharField(initial='utf-8')
     encoding_errors = forms.CharField(initial='ignore')
 
-class MqttReaderForm(forms.Form):
+class MqttReaderForm(BaseRVDASConfigForm):
     object_class = forms.CharField(label='class', initial='MqttReader', disabled=True)
-    name = forms.CharField(required=False)
+    
     #kwargs
     broker = forms.CharField()
     channel = forms.CharField()
     client_name = forms.CharField()
 
 #Complex handling.
-class PolledSerialReaderForm(forms.Form):
+class PolledSerialReaderForm(BaseRVDASConfigForm):
     object_class = forms.CharField(label='class', initial='PolledSerialReader', disabled=True)
-    name = forms.CharField(required=False)
+    
     #kwargs
     port = forms.CharField()
     baudrate = forms.IntegerField(initial=9600)
@@ -98,19 +97,19 @@ class PolledSerialReaderForm(forms.Form):
     stop_cmd = forms.CharField(required=False)
 
 #As evertthing is a subclass, I'm not sure about needing this form. 
-# class ReaderForm(forms.Form):
+# class ReaderForm(BaseRVDASConfigForm):
     # pass
 
-class RedisReaderForm(forms.Form):
+class RedisReaderForm(BaseRVDASConfigForm):
     object_class = forms.CharField(label='class', initial='RedisReader', disabled=True)
-    name = forms.CharField(required=False)
+    
     #kwargs
     channel = forms.CharField()
     password = forms.CharField(required=False)
 
-class SerialReaderForm(forms.Form):
+class SerialReaderForm(BaseRVDASConfigForm):
     object_class = forms.CharField(label='class', initial='SerialReader', disabled=True)
-    name = forms.CharField(required=False)
+    
     #kwargs
     port = forms.CharField(initial=9876)
     baudrate = forms.IntegerField(initial=9600)
@@ -129,9 +128,9 @@ class SerialReaderForm(forms.Form):
     encoding = forms.CharField(initial='utf-8')
     encoding_errors = forms.CharField(initial='ignore')
 
-class TcpReaderForm(forms.Form):
+class TcpReaderForm(BaseRVDASConfigForm):
     object_class = forms.CharField(label='class', initial='TcpReader', disabled=True)
-    name = forms.CharField(required=False)
+    
     #kwargs
     interface = forms.CharField(required=False)
     port = forms.IntegerField(required=False)
@@ -141,9 +140,9 @@ class TcpReaderForm(forms.Form):
     encoding = forms.CharField(initial='utf-8')
     encoding_errors = forms.CharField(initial='ignore')
 
-class TextFileReaderForm(forms.Form):
+class TextFileReaderForm(BaseRVDASConfigForm):
     object_class = forms.CharField(label='class', initial='TextFileReader', disabled=True)
-    name = forms.CharField(required=False)
+    
     #kwargs
     file_spec = forms.CharField(required=False)
     tail = forms.BooleanField(required=False, initial=False)
@@ -152,17 +151,17 @@ class TextFileReaderForm(forms.Form):
     interval = forms.FloatField(required=False, initial=0)
     eol = forms.CharField(required=False)
 
-class TimeoutReaderForm(forms.Form):
+class TimeoutReaderForm(BaseRVDASConfigForm):
     object_class = forms.CharField(label='class', initial='TimeoutReader', disabled=True)
-    name = forms.CharField(required=False)
+    
     #kwargs
     reader = forms.CharField()
     timeout = forms.FloatField()
     message = forms.CharField(required=False)
 
-class UdpReaderForm(forms.Form):
+class UdpReaderForm(BaseRVDASConfigForm):
     object_class = forms.CharField(label='class', initial='UdpReader', disabled=True)
-    name = forms.CharField(required=False)
+    
     #kwargs
     interface = forms.CharField(required=False)
     port = forms.IntegerField(required=False)
@@ -173,9 +172,9 @@ class UdpReaderForm(forms.Form):
     encoding_errors = forms.CharField(initial='ignore')
     this_is_a_test = forms.BooleanField(required=False)
 
-class WebsocketReaderForm(forms.Form):
+class WebsocketReaderForm(BaseRVDASConfigForm):
     object_class = forms.CharField(label='class', initial='WebsocketReader', disabled=True)
-    name = forms.CharField(required=False)
+    
     #kwargs
     uri = forms.CharField(required=False)
     check_cert = forms.BooleanField(required=False, initial=False)

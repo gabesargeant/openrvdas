@@ -1,0 +1,32 @@
+{% extends 'config_base.html' %}
+{% block content %}
+<h1>Config Objects Created</h1>
+
+<h3>Newest First</h3>
+Note, the underlying storage of objects is in JSON. The conversion to YAML is just for humans.
+<hr>
+<hr>
+<table class=" table-bordered">
+    <tr>
+        <th>ID</th>
+        <th>NAME</th>
+        <th>DESCRIPTION</th>
+        <th>CLASS_NAME</th>
+        <th>JSON_OBJECT</th>
+        <th>CREATION_TIME</th>
+    </tr>
+    {%for c in config_objects %}
+
+
+    <tr>
+        <td><a href="{% url 'config_library:config' class_name=c.class_name id=c.id %}">{{c.id}}</a></td>
+        <td>{{c.name}}</td>
+        <td>{{c.description}}</td>
+        <td>{{c.class_name}}</td>
+        <td> <textarea cols=" 60" rows="10">{{c.json_object}}</textarea></td>
+        <td>{{c.creation_time}}</td>
+    </tr>
+
+    {%endfor%}
+</table>
+{% endblock %}

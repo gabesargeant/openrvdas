@@ -3,47 +3,55 @@
 <h1>Config Library Home</h1>
 <ol>
     <li><a href=" {% url 'config_library:library' %}">Library</a></li>
+
+    <li><a href=" {% url 'config_library:rvdas_config_objects' %}">rvdas_config_objects</a></li>
 </ol>
+
+
 
 <h2>Configure a Reader</h2>
 <ul>
 
-    <li><a href=" {% url 'config_library:cached_data_reader' %}">cached_data_reader</a></li>
-    <li><a href=" {% url 'config_library:database_reader' %}">database_reader</a></li>
-    <li><a href=" {% url 'config_library:logfile_reader' %}">logfile_reader</a></li>
-    <li><a href=" {% url 'config_library:modbus_reader' %}">modbus_reader</a></li>
-    <li><a href=" {% url 'config_library:mqtt_reader' %}">mqtt_reader</a></li>
-    <li><a href=" {% url 'config_library:polled_serial_reader' %}">polled_serial_reader</a></li>
-    <li><a href=" {% url 'config_library:redis_reader' %}">redis_reader</a></li>
-    <li><a href=" {% url 'config_library:serial_reader' %}">serial_reader</a></li>
-    <li><a href=" {% url 'config_library:tcp_reader' %}">tcp_reader</a></li>
-    <li><a href=" {% url 'config_library:text_file_reader' %}">text_file_reader</a></li>
-    <li><a href=" {% url 'config_library:timeout_reader' %}">timeout_reader</a></li>
-    <li><a href=" {% url 'config_library:udp_reader' %}">udp_reader</a></li>
-    <li><a href=" {% url 'config_library:websockets_reader' %}">websockets_reader</a></li>
+    <li><a href=" {% url 'config_library:cached_data_reader'  %}">cached_data_reader</a></li>
+
+
+    <li><a href=" {% url 'config_library:config' class_name='DatabaseReader' %}">DatabaseReader</a></li>
+    <li><a href=" {% url 'config_library:config' class_name='LogFileReader' %}">LogFileReader</a></li>
+    <li><a href=" {% url 'config_library:config' class_name='ModbusReader' %}">ModbusReader</a></li>
+    <li><a href=" {% url 'config_library:config' class_name='MqttReader' %}">MqttReader</a></li>
+    <li><a href=" {% url 'config_library:config' class_name='PolledSerialReader' %}">PolledSerialReader</a></li>
+    <li><a href=" {% url 'config_library:config' class_name='RedisReader' %}">RedisReader</a></li>
+    <li><a href=" {% url 'config_library:config' class_name='SerialReader' %}">SerialReader</a></li>
+    <li><a href=" {% url 'config_library:config' class_name='TcpReader' %}">TcpReader</a></li>
+    <li><a href=" {% url 'config_library:config' class_name='TextFileReader' %}">TextFileReader</a></li>
+    <li><a href=" {% url 'config_library:config' class_name='TimeoutReader' %}">TimeoutReader</a></li>
+    <li><a href=" {% url 'config_library:config' class_name='UdpReader' %}">UdpReader</a></li>
+    <li><a href=" {% url 'config_library:config' class_name='WebsocketReader' %}">WebsocketReader</a></li>
 </ul>
 
 <h2>Configure a Transform</h2>
 <ul>
-
-    <li><a href=" {% url 'config_library:delta_transform' %}">delta_transform</a></li>
-    <li><a href=" {% url 'config_library:extract_field_transform' %}">extract_field_transform</a></li>
-    <li><a href=" {% url 'config_library:format_transform' %}">format_transform</a></li>
-    <li><a href=" {% url 'config_library:from_json_transform' %}">from_json_transform</a></li>
-    <li><a href=" {% url 'config_library:geofence_transform' %}">geofence_transform</a></li>
-    <li><a href=" {% url 'config_library:parse_nmea_transform' %}">parse_nmea_transform</a></li>
-    <li><a href=" {% url 'config_library:parse_transform' %}">parse_transform</a></li>
-    <li><a href=" {% url 'config_library:prefix_transform' %}">prefix_transform</a></li>
-    <li><a href=" {% url 'config_library:qc_filter_transform' %}">qc_filter_transform</a></li>
-    <li><a href=" {% url 'config_library:regex_filter_transform' %}">regex_filter_transform</a></li>
-    <li><a href=" {% url 'config_library:regex_replace_transform' %}">regex_replace_transform</a></li>
-    <li><a href=" {% url 'config_library:slice_transform' %}">slice_transform</a></li>
-    <li><a href=" {% url 'config_library:split_transform' %}">split_transform</a></li>
-    <li><a href=" {% url 'config_library:strip_transform' %}">strip_transform</a></li>
-    <li><a href=" {% url 'config_library:timestamp_transform' %}">timestamp_transform</a></li>
-    <li><a href=" {% url 'config_library:to_das_record_transform' %}">to_das_record_transform</a></li>
-    <li><a href=" {% url 'config_library:to_json_transform' %}">to_json_transform</a></li>
-    <li><a href=" {% url 'config_library:value_filter_transform' %}">value_filter_transform</a></li>
-    <li><a href=" {% url 'config_library:xml_aggregator_transform' %}">xml_aggregator_transform</a></li>
+    <li><a href=" {% url 'config_library:config' class_name='CountTransform' %}">CountTransform</a></li>
+    <li><a href=" {% url 'config_library:config' class_name='DeltaTransform' %}">DeltaTransform</a></li>
+    <li><a href=" {% url 'config_library:config' class_name='ExtractFieldTransform' %}">ExtractFieldTransform</a></li>
+    <li><a href=" {% url 'config_library:config' class_name='FormatTransform' %}">FormatTransform</a></li>
+    <li><a href=" {% url 'config_library:config' class_name='FromJsonTransform' %}">FromJsonTransform</a></li>
+    <li><a href=" {% url 'config_library:config' class_name='GeofenceTransform' %}">GeofenceTransform</a></li>
+    <li><a href=" {% url 'config_library:config' class_name='MaxMinTransform' %}">MaxMinTransform</a></li>
+    <li><a href=" {% url 'config_library:config' class_name='ParseNmeaTransform' %}">ParseNmeaTransform</a></li>
+    <li><a href=" {% url 'config_library:config' class_name='ParseTransform' %}">ParseTransform</a></li>
+    <li><a href=" {% url 'config_library:config' class_name='PrefixTransform' %}">PrefixTransform</a></li>
+    <li><a href=" {% url 'config_library:config' class_name='QcFilterTransform' %}">QcFilterTransform</a></li>
+    <li><a href=" {% url 'config_library:config' class_name='RegexFilterTransform' %}">RegexFilterTransform</a></li>
+    <li><a href=" {% url 'config_library:config' class_name='RegexReplaceTransform' %}">RegexReplaceTransform</a></li>
+    <li><a href=" {% url 'config_library:config' class_name='SliceTransform' %}">SliceTransform</a></li>
+    <li><a href=" {% url 'config_library:config' class_name='SplitTransform' %}">SplitTransform</a></li>
+    <li><a href=" {% url 'config_library:config' class_name='StripTransform' %}">StripTransform</a></li>
+    <li><a href=" {% url 'config_library:config' class_name='TimestampTransform' %}">TimestampTransform</a></li>
+    <li><a href=" {% url 'config_library:config' class_name='ToDasRecordTransform' %}">ToDasRecordTransform</a></li>
+    <li><a href=" {% url 'config_library:config' class_name='ToJsonTransform' %}">ToJsonTransform</a></li>
+    <li><a href=" {% url 'config_library:config' class_name='UniqueTransform' %}">UniqueTransform</a></li>
+    <li><a href=" {% url 'config_library:config' class_name='ValueFilterTransform' %}">ValueFilterTransform</a></li>
+    <li><a href=" {% url 'config_library:config' class_name='XmlAggregatorTransform' %}">XmlAggregatorTransform</a></li>
 </ul>
 {% endblock %}

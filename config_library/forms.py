@@ -17,3 +17,8 @@ class ConfigObjectStoreForm(forms.ModelForm):
     class Meta:
         model = ConfigObjectStore
         fields = ['name', 'description', 'class_name', 'json_object']
+
+class BaseRVDASConfigForm(forms.Form):
+    name = forms.CharField(required=False)
+    id = forms.IntegerField(widget=forms.HiddenInput(), required=False)
+    description = forms.CharField(widget=forms.Textarea, label='Description')
