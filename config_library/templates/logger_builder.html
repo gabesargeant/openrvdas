@@ -1,0 +1,29 @@
+{% extends 'config_base.html' %}
+{% block content %}
+<h1>Logger Builder</h1>
+<hr>
+<table class=" table-bordered">
+    <tr>
+        <th>ID</th>
+        <th>NAME</th>
+        <th>DESCRIPTION</th>
+        <th>CLASS_NAME</th>
+
+        <th>CREATION_TIME</th>
+    </tr>
+    {%for c in config_objects %}
+
+
+    <tr>
+        <td><a href="{% url 'config_library:config' class_name=c.class_name id=c.id %}">{{c.id}}</a></td>
+        <td>{{c.name}}</td>
+        <td>{{c.description}}</td>
+        <td>{{c.class_name}}</td>
+
+        <td>{{c.creation_time}}</td>
+    </tr>
+
+    {%endfor%}
+</table>
+
+<hr>

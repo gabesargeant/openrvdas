@@ -1,11 +1,10 @@
 from django.db import models
 from django.utils import timezone
 
-class LibraryCollection(models.Model):    
+
+class LibraryCollection(models.Model):
     collection_name = models.CharField(primary_key=True, max_length=100, null=False)
     description = models.TextField(blank=True, null=True)
-    
-
 
 
 class ConfigObjectStore(models.Model):
