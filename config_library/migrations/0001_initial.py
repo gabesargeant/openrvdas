@@ -19,20 +19,11 @@ class Migration(migrations.Migration):
                 ("description", models.TextField()),
                 ("class_name", models.CharField(max_length=100)),
                 ("json_object", models.TextField()),
-                (
-                    "creation_time",
-                    models.DateTimeField(default=django.utils.timezone.now),
-                ),
+                ("creation_time", models.DateTimeField(default=django.utils.timezone.now)),
             ],
         ),
         migrations.CreateModel(
             name="LibraryCollection",
-            fields=[
-                (
-                    "collection_name",
-                    models.CharField(max_length=100, primary_key=True, serialize=False),
-                ),
-                ("description", models.TextField(blank=True, null=True)),
-            ],
+            fields=[("collection_name", models.CharField(max_length=100, primary_key=True, serialize=False)), ("description", models.TextField(blank=True, null=True))],
         ),
     ]

@@ -18,9 +18,7 @@ from datetime import datetime, timedelta, timezone
 
 
 class CachedDataWriterForm(BaseRVDASConfigForm):
-    object_class = forms.CharField(
-        label="class", initial="CachedDataWriter", disabled=True
-    )
+    object_class = forms.CharField(label="class", initial="CachedDataWriter", disabled=True)
     data_server = forms.CharField(max_length=255)
     start_server = forms.BooleanField(required=False, initial=False)
     back_seconds = forms.IntegerField(initial=480)
@@ -32,15 +30,11 @@ class CachedDataWriterForm(BaseRVDASConfigForm):
 
 
 class DatabaseWriterForm(BaseRVDASConfigForm):
-    object_class = forms.CharField(
-        label="class", initial="DatabaseWriter", disabled=True
-    )
+    object_class = forms.CharField(label="class", initial="DatabaseWriter", disabled=True)
     database = forms.CharField(max_length=255, initial="DEFAULT_DATABASE")
     host = forms.CharField(max_length=255, initial="DEFAULT_DATABASE_HOST")
     user = forms.CharField(max_length=255, initial="DEFAULT_DATABASE_USER")
-    password = forms.CharField(
-        widget=forms.PasswordInput, initial="DEFAULT_DATABASE_PASSWORD"
-    )
+    password = forms.CharField(widget=forms.PasswordInput, initial="DEFAULT_DATABASE_PASSWORD")
     save_source = forms.BooleanField(required=False, initial=True)
 
 
@@ -70,9 +64,7 @@ class FileWriterForm(BaseRVDASConfigForm):
 
 
 class InfluxDBWriterForm(BaseRVDASConfigForm):
-    object_class = forms.CharField(
-        label="class", initial="InfluxDBWriter", disabled=True
-    )
+    object_class = forms.CharField(label="class", initial="InfluxDBWriter", disabled=True)
     bucket_name = forms.CharField(max_length=255, initial="INFLUXDB_BUCKET")
     measurement_name = forms.CharField(max_length=255, required=False)
     auth_token = forms.CharField(max_length=255, initial="INFLUXDB_AUTH_TOKEN")
@@ -82,9 +74,7 @@ class InfluxDBWriterForm(BaseRVDASConfigForm):
 
 
 class LogfileWriterForm(BaseRVDASConfigForm):
-    object_class = forms.CharField(
-        label="class", initial="LogfileWriter", disabled=True
-    )
+    object_class = forms.CharField(label="class", initial="LogfileWriter", disabled=True)
     filebase = forms.CharField(max_length=255, required=False)
     flush = forms.BooleanField(required=False, initial=True)
     time_format = forms.CharField(max_length=255, initial=timestamp.TIME_FORMAT)
@@ -105,9 +95,7 @@ class MQTTWriterForm(BaseRVDASConfigForm):
 
 
 class NetworkWriterForm(BaseRVDASConfigForm):
-    object_class = forms.CharField(
-        label="class", initial="NetworkWriter", disabled=True
-    )
+    object_class = forms.CharField(label="class", initial="NetworkWriter", disabled=True)
     network = forms.CharField(max_length=255)
     num_retry = forms.IntegerField(initial=2)
     eol = forms.CharField(max_length=10, initial="")
@@ -122,9 +110,7 @@ class RedisWriterForm(BaseRVDASConfigForm):
 
 
 class RegexLogfileWriterForm(BaseRVDASConfigForm):
-    object_class = forms.CharField(
-        label="class", initial="RegexLogfileWriter", disabled=True
-    )
+    object_class = forms.CharField(label="class", initial="RegexLogfileWriter", disabled=True)
     filebase = forms.CharField(max_length=255, required=False)
     flush = forms.BooleanField(required=False, initial=True)
     time_format = forms.CharField(max_length=255, initial=timestamp.TIME_FORMAT)
@@ -142,16 +128,7 @@ class SerialWriterForm(BaseRVDASConfigForm):
     port = forms.CharField(max_length=255)
     baudrate = forms.IntegerField(initial=9600)
     bytesize = forms.IntegerField(initial=8)
-    parity = forms.ChoiceField(
-        choices=[
-            ("N", "None"),
-            ("E", "Even"),
-            ("O", "Odd"),
-            ("M", "Mark"),
-            ("S", "Space"),
-        ],
-        initial="N",
-    )
+    parity = forms.ChoiceField(choices=[("N", "None"), ("E", "Even"), ("O", "Odd"), ("M", "Mark"), ("S", "Space")], initial="N")
     stopbits = forms.FloatField(initial=1)
     timeout = forms.FloatField(required=False)
     xonxoff = forms.BooleanField(required=False, initial=False)
@@ -180,9 +157,7 @@ class TCPWriterForm(BaseRVDASConfigForm):
 
 
 class TextFileWriterForm(BaseRVDASConfigForm):
-    object_class = forms.CharField(
-        label="class", initial="TextFileWriter", disabled=True
-    )
+    object_class = forms.CharField(label="class", initial="TextFileWriter", disabled=True)
     filename = forms.CharField(max_length=255, required=False)
     flush = forms.BooleanField(required=False, initial=True)
     truncate = forms.BooleanField(required=False, initial=False)
@@ -193,9 +168,7 @@ class TextFileWriterForm(BaseRVDASConfigForm):
 
 
 class TimeoutWriterForm(BaseRVDASConfigForm):
-    object_class = forms.CharField(
-        label="class", initial="TimeoutWriter", disabled=True
-    )
+    object_class = forms.CharField(label="class", initial="TimeoutWriter", disabled=True)
     writer = forms.CharField(max_length=255)
     timeout = forms.FloatField()
     message = forms.CharField(max_length=255, required=False)
@@ -220,9 +193,7 @@ class UDPWriterForm(BaseRVDASConfigForm):
 
 
 class WebsocketWriterForm(BaseRVDASConfigForm):
-    object_class = forms.CharField(
-        label="class", initial="WebsocketWriter", disabled=True
-    )
+    object_class = forms.CharField(label="class", initial="WebsocketWriter", disabled=True)
     uri = forms.URLField()
     cert_file = forms.CharField(max_length=255, required=False)
     key_file = forms.CharField(max_length=255, required=False)

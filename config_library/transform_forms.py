@@ -25,9 +25,7 @@ from .forms import BaseRVDASConfigForm
 
 
 class InterpolationTransformForm(BaseRVDASConfigForm):
-    object_class = forms.CharField(
-        label="class", initial="InterpolationTransform", disabled=True
-    )
+    object_class = forms.CharField(label="class", initial="InterpolationTransform", disabled=True)
 
     # KWARGS
     interval = forms.CharField(label="Interval")
@@ -90,21 +88,15 @@ class InterpolationFieldSpecForm(forms.Form):
 
 
 class CountTransformForm(BaseRVDASConfigForm):
-    object_class = forms.CharField(
-        label="class", initial="CountTransform", disabled=True
-    )
+    object_class = forms.CharField(label="class", initial="CountTransform", disabled=True)
 
 
 class MaxMinTransformForm(BaseRVDASConfigForm):
-    object_class = forms.CharField(
-        label="class", initial="MaxMinTransform", disabled=True
-    )
+    object_class = forms.CharField(label="class", initial="MaxMinTransform", disabled=True)
 
 
 class UniqueTransformForm(BaseRVDASConfigForm):
-    object_class = forms.CharField(
-        label="class", initial="UniqueTransform", disabled=True
-    )
+    object_class = forms.CharField(label="class", initial="UniqueTransform", disabled=True)
 
 
 #
@@ -113,9 +105,7 @@ class UniqueTransformForm(BaseRVDASConfigForm):
 #
 #
 class DeltaTransformForm(BaseRVDASConfigForm):
-    object_class = forms.CharField(
-        label="class", initial="DeltaTransform", disabled=True
-    )
+    object_class = forms.CharField(label="class", initial="DeltaTransform", disabled=True)
 
     # kwargs
     rate = forms.BooleanField(initial=False, required=False, label="Rate")
@@ -123,18 +113,14 @@ class DeltaTransformForm(BaseRVDASConfigForm):
 
 
 class ExtractFieldTransformForm(BaseRVDASConfigForm):
-    object_class = forms.CharField(
-        label="class", initial="ExtractFieldTransform", disabled=True
-    )
+    object_class = forms.CharField(label="class", initial="ExtractFieldTransform", disabled=True)
 
     # kwargs
     field_name = forms.CharField(label="Field Name", initial="")
 
 
 class FormatTransformForm(BaseRVDASConfigForm):
-    object_class = forms.CharField(
-        label="class", initial="FormatTransform", disabled=True
-    )
+    object_class = forms.CharField(label="class", initial="FormatTransform", disabled=True)
 
     # kwargs
     format_str = forms.CharField(label="Format String")
@@ -142,88 +128,56 @@ class FormatTransformForm(BaseRVDASConfigForm):
 
 
 class FromJsonTransformForm(BaseRVDASConfigForm):
-    object_class = forms.CharField(
-        label="class", initial="FromJsonTransform", disabled=True
-    )
+    object_class = forms.CharField(label="class", initial="FromJsonTransform", disabled=True)
 
     # kwargs
     das_record = forms.BooleanField(initial=False, required=False, label="DAS Record")
 
 
 class GeofenceTransformForm(BaseRVDASConfigForm):
-    object_class = forms.CharField(
-        label="class", initial="GeofenceTransform", disabled=True
-    )
+    object_class = forms.CharField(label="class", initial="GeofenceTransform", disabled=True)
 
     # kwargs
     latitude_field_name = forms.CharField(label="Latitude Field Name")
     longitude_field_name = forms.CharField(label="Longitude Field Name")
     boundary_file_name = forms.CharField(required=False, label="Boundary File Name")
     boundary_dir_name = forms.CharField(required=False, label="Boundary Directory Name")
-    distance_from_boundary_in_degrees = forms.FloatField(
-        initial=0, label="Distance from Boundary (in degrees)"
-    )
-    leaving_boundary_message = forms.CharField(
-        required=False, label="Leaving Boundary Message"
-    )
-    entering_boundary_message = forms.CharField(
-        required=False, label="Entering Boundary Message"
-    )
-    seconds_between_checks = forms.IntegerField(
-        initial=0, label="Seconds Between Checks"
-    )
+    distance_from_boundary_in_degrees = forms.FloatField(initial=0, label="Distance from Boundary (in degrees)")
+    leaving_boundary_message = forms.CharField(required=False, label="Leaving Boundary Message")
+    entering_boundary_message = forms.CharField(required=False, label="Entering Boundary Message")
+    seconds_between_checks = forms.IntegerField(initial=0, label="Seconds Between Checks")
 
 
 class ParseNmeaTransformForm(BaseRVDASConfigForm):
-    object_class = forms.CharField(
-        label="class", initial="ParseNmeaTransform", disabled=True
-    )
+    object_class = forms.CharField(label="class", initial="ParseNmeaTransform", disabled=True)
 
     # kwargs
     json = forms.BooleanField(initial=False, required=False, label="JSON")
-    message_path = forms.CharField(
-        initial=nmea_parser.DEFAULT_MESSAGE_PATH, label="Message Path"
-    )
-    sensor_path = forms.CharField(
-        initial=nmea_parser.DEFAULT_SENSOR_PATH, label="Sensor Path"
-    )
-    sensor_model_path = forms.CharField(
-        initial=nmea_parser.DEFAULT_SENSOR_MODEL_PATH, label="Sensor Model Path"
-    )
+    message_path = forms.CharField(initial=nmea_parser.DEFAULT_MESSAGE_PATH, label="Message Path")
+    sensor_path = forms.CharField(initial=nmea_parser.DEFAULT_SENSOR_PATH, label="Sensor Path")
+    sensor_model_path = forms.CharField(initial=nmea_parser.DEFAULT_SENSOR_MODEL_PATH, label="Sensor Model Path")
     time_format = forms.CharField(required=False, label="Time Format")
 
 
 class ParseTransformForm(BaseRVDASConfigForm):
-    object_class = forms.CharField(
-        label="class", initial="ParseTransform", disabled=True
-    )
+    object_class = forms.CharField(label="class", initial="ParseTransform", disabled=True)
 
     # kwargs
     record_format = forms.CharField(required=False, label="Record Format")
     field_patterns = forms.CharField(required=False, label="Field Patterns")
     metadata = forms.CharField(required=False, label="Metadata")
-    definition_path = forms.CharField(
-        initial=record_parser.DEFAULT_DEFINITION_PATH, label="Definition Path"
-    )
+    definition_path = forms.CharField(initial=record_parser.DEFAULT_DEFINITION_PATH, label="Definition Path")
     return_json = forms.BooleanField(initial=False, required=False, label="Return JSON")
-    return_das_record = forms.BooleanField(
-        initial=False, required=False, label="Return DAS Record"
-    )
+    return_das_record = forms.BooleanField(initial=False, required=False, label="Return DAS Record")
     metadata_interval = forms.CharField(required=False, label="Metadata Interval")
-    strip_unprintable = forms.BooleanField(
-        initial=False, required=False, label="Strip Unprintable"
-    )
+    strip_unprintable = forms.BooleanField(initial=False, required=False, label="Strip Unprintable")
     quiet = forms.BooleanField(initial=False, required=False, label="Quiet")
-    prepend_data_id = forms.BooleanField(
-        initial=False, required=False, label="Prepend Data ID"
-    )
+    prepend_data_id = forms.BooleanField(initial=False, required=False, label="Prepend Data ID")
     delimiter = forms.CharField(initial=":", label="Delimiter")
 
 
 class PrefixTransformForm(BaseRVDASConfigForm):
-    object_class = forms.CharField(
-        label="class", initial="PrefixTransform", disabled=True
-    )
+    object_class = forms.CharField(label="class", initial="PrefixTransform", disabled=True)
 
     # kwargs
     prefix = forms.CharField(required=False, label="Prefix")
@@ -232,9 +186,7 @@ class PrefixTransformForm(BaseRVDASConfigForm):
 
 
 class QcFilterTransformForm(BaseRVDASConfigForm):
-    object_class = forms.CharField(
-        label="class", initial="QcFilterTransform", disabled=True
-    )
+    object_class = forms.CharField(label="class", initial="QcFilterTransform", disabled=True)
 
     # kwargs
     bounds = forms.CharField(label="Bounds")
@@ -242,9 +194,7 @@ class QcFilterTransformForm(BaseRVDASConfigForm):
 
 
 class RegexFilterTransformForm(BaseRVDASConfigForm):
-    object_class = forms.CharField(
-        label="class", initial="RegexFilterTransform", disabled=True
-    )
+    object_class = forms.CharField(label="class", initial="RegexFilterTransform", disabled=True)
 
     # kwargs
     pattern = forms.CharField(label="Pattern (Regex)")
@@ -253,9 +203,7 @@ class RegexFilterTransformForm(BaseRVDASConfigForm):
 
 
 class RegexReplaceTransformForm(BaseRVDASConfigForm):
-    object_class = forms.CharField(
-        label="class", initial="RegexReplaceTransform", disabled=True
-    )
+    object_class = forms.CharField(label="class", initial="RegexReplaceTransform", disabled=True)
 
     # kwargs
     patterns = forms.CharField(label="Patterns (Regex)")
@@ -264,9 +212,7 @@ class RegexReplaceTransformForm(BaseRVDASConfigForm):
 
 
 class SliceTransformForm(BaseRVDASConfigForm):
-    object_class = forms.CharField(
-        label="class", initial="SliceTransform", disabled=True
-    )
+    object_class = forms.CharField(label="class", initial="SliceTransform", disabled=True)
 
     # kwargs
     fields = forms.CharField(required=False, label="Fields")
@@ -274,34 +220,24 @@ class SliceTransformForm(BaseRVDASConfigForm):
 
 
 class SplitTransformForm(BaseRVDASConfigForm):
-    object_class = forms.CharField(
-        label="class", initial="SplitTransform", disabled=True
-    )
+    object_class = forms.CharField(label="class", initial="SplitTransform", disabled=True)
 
     # kwargs
     sep = forms.CharField(initial="\n", label="Separator")
 
 
 class StripTransformForm(BaseRVDASConfigForm):
-    object_class = forms.CharField(
-        label="class", initial="StripTransform", disabled=True
-    )
+    object_class = forms.CharField(label="class", initial="StripTransform", disabled=True)
 
     # kwargs
     chars = forms.CharField(required=False, label="Characters")
     unprintable = forms.BooleanField(required=False, initial=False, label="Unprintable")
-    strip_prefix = forms.BooleanField(
-        required=False, initial=False, label="Strip Prefix"
-    )
-    strip_suffix = forms.BooleanField(
-        required=False, initial=False, label="Strip Suffix"
-    )
+    strip_prefix = forms.BooleanField(required=False, initial=False, label="Strip Prefix")
+    strip_suffix = forms.BooleanField(required=False, initial=False, label="Strip Suffix")
 
 
 class TimestampTransformForm(BaseRVDASConfigForm):
-    object_class = forms.CharField(
-        label="class", initial="TimestampTransform", disabled=True
-    )
+    object_class = forms.CharField(label="class", initial="TimestampTransform", disabled=True)
 
     # kwargs
     time_format = forms.CharField(initial=timestamp.TIME_FORMAT, label="Time Format")
@@ -310,9 +246,7 @@ class TimestampTransformForm(BaseRVDASConfigForm):
 
 
 class ToDasRecordTransformForm(BaseRVDASConfigForm):
-    object_class = forms.CharField(
-        label="class", initial="ToDasRecordTransform", disabled=True
-    )
+    object_class = forms.CharField(label="class", initial="ToDasRecordTransform", disabled=True)
 
     # kwargs
     data_id = forms.CharField(required=False, label="Data ID")
@@ -320,45 +254,27 @@ class ToDasRecordTransformForm(BaseRVDASConfigForm):
 
 
 class ToJsonTransformForm(BaseRVDASConfigForm):
-    object_class = forms.CharField(
-        label="class", initial="ToJsonTransform", disabled=True
-    )
+    object_class = forms.CharField(label="class", initial="ToJsonTransform", disabled=True)
 
     # kwargs
-    input_format = forms.ChoiceField(
-        choices=[("formats.Python_Record", "Python Record"), ("formats.Text", "Text")],
-        label="Input Format",
-    )
-    output_format = forms.ChoiceField(
-        choices=[("formats.Python_Record", "Python Record"), ("formats.Text", "Text")],
-        label="Output Format",
-    )
+    input_format = forms.ChoiceField(choices=[("formats.Python_Record", "Python Record"), ("formats.Text", "Text")], label="Input Format")
+    output_format = forms.ChoiceField(choices=[("formats.Python_Record", "Python Record"), ("formats.Text", "Text")], label="Output Format")
 
 
 class ValueFilterTransformForm(BaseRVDASConfigForm):
-    object_class = forms.CharField(
-        label="class", initial="ValueFilterTransform", disabled=True
-    )
+    object_class = forms.CharField(label="class", initial="ValueFilterTransform", disabled=True)
 
     # kwargs
     bounds = forms.CharField(required=False, label="Bounds")
     log_level = forms.ChoiceField(
-        choices=[
-            (logging.DEBUG, "DEBUG"),
-            (logging.INFO, "INFO"),
-            (logging.WARNING, "WARNING"),
-            (logging.ERROR, "ERROR"),
-            (logging.CRITICAL, "CRITICAL"),
-        ],
+        choices=[(logging.DEBUG, "DEBUG"), (logging.INFO, "INFO"), (logging.WARNING, "WARNING"), (logging.ERROR, "ERROR"), (logging.CRITICAL, "CRITICAL")],
         label="Log Level",
         initial=logging.INFO,
     )
 
 
 class XmlAggregatorTransformForm(BaseRVDASConfigForm):
-    object_class = forms.CharField(
-        label="class", initial="XmlAggregatorTransform", disabled=True
-    )
+    object_class = forms.CharField(label="class", initial="XmlAggregatorTransform", disabled=True)
 
     # kwargs
     tag = forms.CharField(max_length=100, label="XML Tag")

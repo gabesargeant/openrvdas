@@ -56,7 +56,6 @@ from .writer_forms import (
     FileWriterForm,
     InfluxDBWriterForm,
     LogfileWriterForm,
-    
     MQTTWriterForm,
     NetworkWriterForm,
     RedisWriterForm,
@@ -117,7 +116,7 @@ class_form_dict = {
     "EmailWriter": EmailWriterForm,
     "FileWriter": FileWriterForm,
     "InfluxDBWriter": InfluxDBWriterForm,
-    "LogfileWriter": LogfileWriterForm,    
+    "LogfileWriter": LogfileWriterForm,
     "MQTTWriter": MQTTWriterForm,
     "NetworkWriter": NetworkWriterForm,
     "RedisWriter": RedisWriterForm,
@@ -157,7 +156,6 @@ class RVDASConfigObjects(TemplateView):
         return render(request, self.template_name, {"config_objects": config_objects})
 
 
-
 class LoggerBuilder(TemplateView):
     template_name = "logger_builder.html"
 
@@ -165,7 +163,6 @@ class LoggerBuilder(TemplateView):
         config_objects = ConfigObjectStore.objects.order_by("-creation_time").all()
 
         return render(request, self.template_name, {"config_objects": config_objects})
-
 
 
 class BaseKwargsFormView(TemplateView):
@@ -193,12 +190,7 @@ class BaseKwargsFormView(TemplateView):
 
             # unpack #I hate yaml
             # we take the kwargs nested dict and merge it same level as the class name etc.
-            initial_form = {
-                "class_name": py_object_json["class"],
-                "name": py_object_json["name"],
-                "id": id,
-                "description": config_object.description,
-            }
+            initial_form = {"class_name": py_object_json["class"], "name": py_object_json["name"], "id": id, "description": config_object.description}
             initial_form.update(py_object_json.get("kwargs", {}))
 
             form = self.kwargs_form(initial=initial_form)
@@ -207,23 +199,11 @@ class BaseKwargsFormView(TemplateView):
             object_json = json.dumps(py_object_json, default=str, indent=2)
             object_yaml = yaml.dump(py_object_json, sort_keys=False)
 
-            return render(
-                request,
-                self.template_name,
-                {
-                    "name": self.name,
-                    "form": form,
-                    "json_object": object_json,
-                    "yaml_object": object_yaml,
-                    "post_form": post_form,
-                },
-            )
+            return render(request, self.template_name, {"name": self.name, "form": form, "json_object": object_json, "yaml_object": object_yaml, "post_form": post_form})
 
         # standard GET request.
         form = self.kwargs_form()
-        return render(
-            request, self.template_name, {"name": self.name, "form": form, "id": id}
-        )
+        return render(request, self.template_name, {"name": self.name, "form": form, "id": id})
 
     def post(self, request, *args, **kwargs):
         class_name = kwargs.get("class_name")
@@ -245,8 +225,8 @@ class BaseKwargsFormView(TemplateView):
                     object[k] = v
                 elif k.lower() == "object_class":
                     object["class"] = v
-                    class_name = v                   
-                elif k.lower() in ["description" , "id"]:
+                    class_name = v
+                elif k.lower() in ["description", "id"]:
                     # Skip the description. Though maybe something to include?
                     continue
                 else:
@@ -266,19 +246,19 @@ class BaseKwargsFormView(TemplateView):
                     raise ValueError("Instance ID is None")
             except (ValueError, ConfigObjectStore.DoesNotExist):
                 obj = ConfigObjectStore()
-            
-            obj.save() # to create the id
-            #set description
-            
+
+            obj.save()  # to create the id
+            # set description
+
             obj.description = form.cleaned_data.get("description")
-            #set the object id, 
+            # set the object id,
             object["ObjectStoreId"] = obj.id
             object_json = json.dumps(object, default=str, indent=2)
-            #Set the json 
+            # Set the json
             obj.json_object = object_json
-            #Class
+            # Class
             obj.class_name = class_name
-            #Name pointy id ->
+            # Name pointy id ->
             obj.name = form.cleaned_data.get("name")
             obj.save()
             obj_id = obj.id
@@ -302,21 +282,10 @@ class CachedDataReaderView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         form = CachedDataReaderForm()
-        subscription_formset = forms.formset_factory(
-            SubscriptionFields, extra=1, min_num=1
-        )
+        subscription_formset = forms.formset_factory(SubscriptionFields, extra=1, min_num=1)
         subscription = subscription_formset(prefix="subscription")
 
-        return render(
-            request,
-            self.template_name,
-            {
-                "form": form,
-                "formsets": [
-                    {"name": "subscription", "formset": subscription},
-                ],
-            },
-        )
+        return render(request, self.template_name, {"form": form, "formsets": [{"name": "subscription", "formset": subscription}]})
 
     def post(self, request, *args, **kwargs):
 
@@ -332,9 +301,7 @@ class CachedDataReaderView(TemplateView):
 
     def patch(self, request, *args, **kwargs):
         form = CachedDataReaderForm(request.POST, request.FILES)
-        subscription_formset = forms.formset_factory(
-            SubscriptionFields, extra=1, min_num=0
-        )
+        subscription_formset = forms.formset_factory(SubscriptionFields, extra=1, min_num=0)
 
         formset = subscription_formset(request.POST, prefix="subscription")
 
@@ -367,27 +334,12 @@ class CachedDataReaderView(TemplateView):
         object_yaml = yaml.dump(object, sort_keys=False)
 
         # Creat the submission Initial Form (this is the object store, use to add description.)
-        post_form = ConfigObjectStoreForm(
-            initial={
-                "name": object.get("name", None),
-                "class_name": object.get("class", None),
-                "description": "",
-                "json_object": object_json,
-            }
-        )
+        post_form = ConfigObjectStoreForm(initial={"name": object.get("name", None), "class_name": object.get("class", None), "description": "", "json_object": object_json})
 
         return render(
             request,
             self.template_name,
-            {
-                "form": form,
-                "formsets": [
-                    {"name": "subscription", "formset": formset},
-                ],
-                "json_object": object_json,
-                "yaml_object": object_yaml,
-                "post_form": post_form,
-            },
+            {"form": form, "formsets": [{"name": "subscription", "formset": formset}], "json_object": object_json, "yaml_object": object_yaml, "post_form": post_form},
         )
 
 
@@ -415,31 +367,15 @@ class InterpolationTransformView(TemplateView):
             py_object_json = json.loads(json_object)
 
             # unpacking everything. Terrible.
-            initial_form = {
-                "class_name": py_object_json["class"],
-                "name": py_object_json["name"],
-                "id": id,
-                "description": config_object.description,
-                **py_object_json["kwargs"],
-            }
+            initial_form = {"class_name": py_object_json["class"], "name": py_object_json["name"], "id": id, "description": config_object.description, **py_object_json["kwargs"]}
             form = InterpolationTransformForm(initial=initial_form)
 
             intial_formset_data = []
             for k, v in py_object_json["kwargs"]["field_spec"].items():
-                intial_formset_data.append(
-                    {
-                        "interpolated_field": k,
-                        "source": v["source"],
-                        **v["algorithm"],
-                    }
-                )
+                intial_formset_data.append({"interpolated_field": k, "source": v["source"], **v["algorithm"]})
 
-            field_spec_formset = forms.formset_factory(
-                InterpolationFieldSpecForm, extra=1, min_num=0
-            )
-            formset = field_spec_formset(
-                prefix=self.fieldset_prefix, initial=intial_formset_data
-            )
+            field_spec_formset = forms.formset_factory(InterpolationFieldSpecForm, extra=1, min_num=0)
+            formset = field_spec_formset(prefix=self.fieldset_prefix, initial=intial_formset_data)
 
             object_json = json.dumps(py_object_json, default=str, indent=2)
             object_yaml = yaml.dump(py_object_json, sort_keys=False)
@@ -450,9 +386,7 @@ class InterpolationTransformView(TemplateView):
                 {
                     "name": self.name,
                     "form": form,
-                    "formsets": [
-                        {"name": self.fieldset_prefix, "formset": formset},
-                    ],
+                    "formsets": [{"name": self.fieldset_prefix, "formset": formset}],
                     "json_object": object_json,
                     "yaml_object": object_yaml,
                     "post_form": post_form,
@@ -460,29 +394,15 @@ class InterpolationTransformView(TemplateView):
             )
 
         form = InterpolationTransformForm()
-        field_spec_formset = forms.formset_factory(
-            InterpolationFieldSpecForm, extra=1, min_num=0
-        )
+        field_spec_formset = forms.formset_factory(InterpolationFieldSpecForm, extra=1, min_num=0)
         field_spec_formset = field_spec_formset(prefix=self.fieldset_prefix)
 
-        return render(
-            request,
-            self.template_name,
-            {
-                "name": self.name,
-                "form": form,
-                "formsets": [
-                    {"name": self.fieldset_prefix, "formset": field_spec_formset},
-                ],
-            },
-        )
+        return render(request, self.template_name, {"name": self.name, "form": form, "formsets": [{"name": self.fieldset_prefix, "formset": field_spec_formset}]})
 
     def post(self, request, *args, **kwargs):
 
         form = InterpolationTransformForm(request.POST, request.FILES)
-        field_spec_formset = forms.formset_factory(
-            form=InterpolationFieldSpecForm, extra=1, min_num=0
-        )
+        field_spec_formset = forms.formset_factory(form=InterpolationFieldSpecForm, extra=1, min_num=0)
         formset = field_spec_formset(request.POST, prefix=self.fieldset_prefix)
 
         object = {}
@@ -517,13 +437,7 @@ class InterpolationTransformView(TemplateView):
                 if interpolated_field is None:
                     continue
 
-                field_spec_instance = {
-                    "source": sf.get("source", None),
-                    "algorithm": {
-                        "type": sf.get("type", None),
-                        "window": sf.get("window", None),
-                    },
-                }
+                field_spec_instance = {"source": sf.get("source", None), "algorithm": {"type": sf.get("type", None), "window": sf.get("window", None)}}
                 field_spec[interpolated_field] = field_spec_instance
 
             object["kwargs"]["field_spec"] = field_spec

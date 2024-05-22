@@ -3,9 +3,7 @@ from .forms import BaseRVDASConfigForm
 
 
 class CachedDataReaderForm(BaseRVDASConfigForm):
-    object_class = forms.CharField(
-        label="class", initial="CachedDataReader", disabled=True
-    )
+    object_class = forms.CharField(label="class", initial="CachedDataReader", disabled=True)
 
     # kwargs
     data_server = forms.CharField(label="data_server", initial="localhost:8766")
@@ -27,9 +25,7 @@ class SubscriptionFields(forms.Form):
 #
 #
 class DatabaseReaderForm(BaseRVDASConfigForm):
-    object_class = forms.CharField(
-        label="class", initial="DatabaseReader", disabled=True
-    )
+    object_class = forms.CharField(label="class", initial="DatabaseReader", disabled=True)
 
     # kwargs
     # kwargs
@@ -42,9 +38,7 @@ class DatabaseReaderForm(BaseRVDASConfigForm):
 
 
 class LogFileReaderForm(BaseRVDASConfigForm):
-    object_class = forms.CharField(
-        label="class", initial="LogFileReader", disabled=True
-    )
+    object_class = forms.CharField(label="class", initial="LogFileReader", disabled=True)
 
     # kwargs
     filebase = forms.CharField(required=False)
@@ -84,9 +78,7 @@ class MqttReaderForm(BaseRVDASConfigForm):
 
 # Complex handling.
 class PolledSerialReaderForm(BaseRVDASConfigForm):
-    object_class = forms.CharField(
-        label="class", initial="PolledSerialReader", disabled=True
-    )
+    object_class = forms.CharField(label="class", initial="PolledSerialReader", disabled=True)
 
     # kwargs
     port = forms.CharField()
@@ -160,9 +152,7 @@ class TcpReaderForm(BaseRVDASConfigForm):
 
 
 class TextFileReaderForm(BaseRVDASConfigForm):
-    object_class = forms.CharField(
-        label="class", initial="TextFileReader", disabled=True
-    )
+    object_class = forms.CharField(label="class", initial="TextFileReader", disabled=True)
 
     # kwargs
     file_spec = forms.CharField(required=False)
@@ -174,9 +164,7 @@ class TextFileReaderForm(BaseRVDASConfigForm):
 
 
 class TimeoutReaderForm(BaseRVDASConfigForm):
-    object_class = forms.CharField(
-        label="class", initial="TimeoutReader", disabled=True
-    )
+    object_class = forms.CharField(label="class", initial="TimeoutReader", disabled=True)
 
     # kwargs
     reader = forms.CharField()
@@ -199,9 +187,7 @@ class UdpReaderForm(BaseRVDASConfigForm):
 
 
 class WebsocketReaderForm(BaseRVDASConfigForm):
-    object_class = forms.CharField(
-        label="class", initial="WebsocketReader", disabled=True
-    )
+    object_class = forms.CharField(label="class", initial="WebsocketReader", disabled=True)
 
     # kwargs
     uri = forms.CharField(required=False)
