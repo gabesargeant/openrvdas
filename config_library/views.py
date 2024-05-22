@@ -5,6 +5,7 @@ from django.urls import reverse
 from .models import LibraryCollection, ConfigObjectStore
 from django.views.generic import TemplateView
 from django.shortcuts import get_object_or_404
+from .forms import LoggerForm
 from .reader_forms import (
     CachedDataReaderForm,
     SubscriptionFields,
@@ -155,14 +156,70 @@ class RVDASConfigObjects(TemplateView):
 
         return render(request, self.template_name, {"config_objects": config_objects})
 
+    
+    def post(self, request):
 
-class LoggerBuilder(TemplateView):
+        if request.POST.get('_method') == 'delete':
+            id = request.POST.get('id')
+            if id:
+                obj = get_object_or_404(ConfigObjectStore, id=id)
+                obj.delete()
+        
+        return redirect("config_library:rvdas_config_objects")
+
+        
+
+
+class LoggerBuilderView(TemplateView):
     template_name = "logger_builder.html"
 
     def get(self, request):
-        config_objects = ConfigObjectStore.objects.order_by("-creation_time").all()
 
-        return render(request, self.template_name, {"config_objects": config_objects})
+        selected_object_ids = request.GET.getlist('selected_object')        
+        name = request.GET.get('name') 
+        
+            
+        selected_objects = ConfigObjectStore.objects.filter(id__in=selected_object_ids)   
+
+        logger = {"readers": None,
+                "transforms":[],
+                "writers": []}
+    
+        for s in selected_objects:
+            class_name = s.class_name
+            print(class_name.lower())
+            object_json = json.loads(s.json_object)
+            if 'reader' in class_name.lower():
+                logger['readers'] = object_json
+
+            elif "transform" in class_name.lower():
+                logger['transforms'].append(object_json)
+
+            elif "writer" in class_name.lower():
+                logger['writers'].append(object_json)
+
+        complete_logger = {name: logger}
+
+        logger_json = json.dumps(complete_logger, default=str, indent=2)
+        logger_yaml = yaml.dump(complete_logger, sort_keys=False)
+            
+            
+        
+
+        config_objects = ConfigObjectStore.objects.order_by("-creation_time").all()
+        distinct_class_names = ConfigObjectStore.objects.values_list('class_name', flat=True).distinct()
+
+        return render(
+            request,
+            self.template_name,
+            {
+                "config_objects": config_objects,
+                'class_list': distinct_class_names,
+                'logger_json': logger_json,
+                'logger_yaml': logger_yaml,
+                
+            },
+        )
 
 
 class BaseKwargsFormView(TemplateView):
@@ -199,7 +256,9 @@ class BaseKwargsFormView(TemplateView):
             object_json = json.dumps(py_object_json, default=str, indent=2)
             object_yaml = yaml.dump(py_object_json, sort_keys=False)
 
-            return render(request, self.template_name, {"name": self.name, "form": form, "json_object": object_json, "yaml_object": object_yaml, "post_form": post_form})
+            return render(
+                request, self.template_name, {"name": self.name, "form": form, "json_object": object_json, "yaml_object": object_yaml, "post_form": post_form}
+            )
 
         # standard GET request.
         form = self.kwargs_form()
@@ -334,12 +393,20 @@ class CachedDataReaderView(TemplateView):
         object_yaml = yaml.dump(object, sort_keys=False)
 
         # Creat the submission Initial Form (this is the object store, use to add description.)
-        post_form = ConfigObjectStoreForm(initial={"name": object.get("name", None), "class_name": object.get("class", None), "description": "", "json_object": object_json})
+        post_form = ConfigObjectStoreForm(
+            initial={"name": object.get("name", None), "class_name": object.get("class", None), "description": "", "json_object": object_json}
+        )
 
         return render(
             request,
             self.template_name,
-            {"form": form, "formsets": [{"name": "subscription", "formset": formset}], "json_object": object_json, "yaml_object": object_yaml, "post_form": post_form},
+            {
+                "form": form,
+                "formsets": [{"name": "subscription", "formset": formset}],
+                "json_object": object_json,
+                "yaml_object": object_yaml,
+                "post_form": post_form,
+            },
         )
 
 
@@ -367,7 +434,13 @@ class InterpolationTransformView(TemplateView):
             py_object_json = json.loads(json_object)
 
             # unpacking everything. Terrible.
-            initial_form = {"class_name": py_object_json["class"], "name": py_object_json["name"], "id": id, "description": config_object.description, **py_object_json["kwargs"]}
+            initial_form = {
+                "class_name": py_object_json["class"],
+                "name": py_object_json["name"],
+                "id": id,
+                "description": config_object.description,
+                **py_object_json["kwargs"],
+            }
             form = InterpolationTransformForm(initial=initial_form)
 
             intial_formset_data = []

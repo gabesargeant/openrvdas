@@ -1,29 +1,69 @@
 {% extends 'config_base.html' %}
 {% block content %}
 <h1>Logger Builder</h1>
+<ul>
+    <li>Note, the underlying storage of objects is in JSON. The conversion to YAML is just for humans.</li>
+    <li>When you selete a object via its' ID you're editing that object. </li>
+    <li>There's not history yet </li>
+
+</ul>
 <hr>
-<table class=" table-bordered">
-    <tr>
-        <th>ID</th>
-        <th>NAME</th>
-        <th>DESCRIPTION</th>
-        <th>CLASS_NAME</th>
+<!-- <form action>
+    <select name=class_name_select onchange="this.form.submit()">
+        <option selected disabled>All default</option>
+        {% for option in class_list %}
+        <option>{{ option }}</option>
+        {% endfor %}
+    </select>
+</form> -->
+<form action>
+    <div style="display: flex; flex-direction: row; gap: 30px">
 
-        <th>CREATION_TIME</th>
-    </tr>
-    {%for c in config_objects %}
+        <div>
+            <table class=" table-bordered">
+                <tr>
+                    <th>ID</th>
+                    <th>NAME</th>
+                    <th>DESCRIPTION</th>
+                    <th>CLASS_NAME
+
+                    </th>
+                    <th>JSON_OBJECT</th>
+                    <th>CREATION_TIME</th>
+                    <th>SELECT FOR LOGGER</th>
+                </tr>
+                {%for c in config_objects %}
 
 
-    <tr>
-        <td><a href="{% url 'config_library:config' class_name=c.class_name id=c.id %}">{{c.id}}</a></td>
-        <td>{{c.name}}</td>
-        <td>{{c.description}}</td>
-        <td>{{c.class_name}}</td>
+                <tr>
+                    <td><a href="{% url 'config_library:config' class_name=c.class_name id=c.id %}">{{c.id}}</a></td>
+                    <td>{{c.name}}</td>
+                    <td>{{c.description}}</td>
+                    <td>{{c.class_name}}</td>
+                    <td>
+                        <details>
+                            <summary>json</summary>
+                            <textarea cols=" 60" rows="10">{{c.json_object}}</textarea>
+                        </details>
+                    </td>
+                    <td>{{c.creation_time}}</td>
+                    <td><input type="checkbox" name='selected_object' value="{{c.id}}"></td>
+                </tr>
 
-        <td>{{c.creation_time}}</td>
-    </tr>
+                {%endfor%}
+            </table>
+        </div>
 
-    {%endfor%}
-</table>
+        <div>
+            <input type="submit" value="Submit">
+            <input type="text" placeholder="logger->name" name='name' pattern="^\S+$" title="No spaces allowed" required>
+            <hr>
+            <textarea cols="80" rows="60">{{logger_yaml}}</textarea>
+            <textarea cols="80" rows="60">{{logger_json}}</textarea>
 
+        </div>
+
+    </div>
+</form>
 <hr>
+{% endblock %}

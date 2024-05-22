@@ -3,7 +3,12 @@
 <h1>Config Objects Created</h1>
 
 <h3>Newest First</h3>
-Note, the underlying storage of objects is in JSON. The conversion to YAML is just for humans.
+<ul>
+    <li>Note, the underlying storage of objects is in JSON. The conversion to YAML is just for humans.</li>
+    <li>When you selete a object via its' ID you're editing that object. </li>
+    <li>There's not history yet </li>
+
+</ul>
 <hr>
 <hr>
 <table class=" table-bordered">
@@ -14,6 +19,7 @@ Note, the underlying storage of objects is in JSON. The conversion to YAML is ju
         <th>CLASS_NAME</th>
         <th>JSON_OBJECT</th>
         <th>CREATION_TIME</th>
+        <th>DELETE</th>
     </tr>
     {%for c in config_objects %}
 
@@ -23,8 +29,22 @@ Note, the underlying storage of objects is in JSON. The conversion to YAML is ju
         <td>{{c.name}}</td>
         <td>{{c.description}}</td>
         <td>{{c.class_name}}</td>
-        <td> <textarea cols=" 60" rows="10">{{c.json_object}}</textarea></td>
+        <td>
+            <details>
+                <summary>json</summary>
+                <textarea cols=" 60" rows="10">{{c.json_object}}</textarea>
+            </details>
+        </td>
+
         <td>{{c.creation_time}}</td>
+        <td>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="_method" value="delete">
+                <input type="hidden" name="id" value="{{ c.id }}">
+                <button type="submit">Delete</button> Object
+            </form>
+        </td>
     </tr>
 
     {%endfor%}

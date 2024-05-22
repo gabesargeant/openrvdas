@@ -24,6 +24,9 @@ class Migration(migrations.Migration):
         ),
         migrations.CreateModel(
             name="LibraryCollection",
-            fields=[("collection_name", models.CharField(max_length=100, primary_key=True, serialize=False)), ("description", models.TextField(blank=True, null=True))],
+            fields=[
+                ("collection_name", models.CharField(max_length=100, primary_key=True, serialize=False)),
+                ("description", models.TextField(blank=True, null=True)),
+            ],
         ),
     ]
