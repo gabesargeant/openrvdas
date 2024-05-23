@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect
+from django.db.models import Case, When, IntegerField
 from django.http import QueryDict
 from .forms import LibraryCollectionForm, ConfigObjectStoreForm
 from django.urls import reverse
 from .models import LibraryCollection, ConfigObjectStore
 from django.views.generic import TemplateView
 from django.shortcuts import get_object_or_404
-from .forms import LoggerForm
+from .forms import ListenerForm
 from .reader_forms import (
     CachedDataReaderForm,
     SubscriptionFields,
@@ -156,7 +157,6 @@ class RVDASConfigObjects(TemplateView):
 
         return render(request, self.template_name, {"config_objects": config_objects})
 
-    
     def post(self, request):
 
         if request.POST.get('_method') == 'delete':
@@ -164,50 +164,109 @@ class RVDASConfigObjects(TemplateView):
             if id:
                 obj = get_object_or_404(ConfigObjectStore, id=id)
                 obj.delete()
-        
-        return redirect("config_library:rvdas_config_objects")
 
-        
+        return redirect("config_library:rvdas_config_objects")
 
 
 class LoggerBuilderView(TemplateView):
     template_name = "logger_builder.html"
 
-    def get(self, request):
-
-        selected_object_ids = request.GET.getlist('selected_object')        
-        name = request.GET.get('name') 
+    def get(self, request, *args, **kwargs):
+        id = kwargs.get("id", None) 
         
+        #neat trick
+        name = description  = host_id = interval = check_format = None
+        readers_list = transforms_list = writers_list = stderr_writers_list = []
+        
+        if id is not None:
+            conf_obj = get_object_or_404(ConfigObjectStore, id = id)
+            name = conf_obj = name
+            class_name =  conf_obj.class_name
+            description = conf_obj = description
+            json_logger = json.loads(conf_obj.json_object)
             
-        selected_objects = ConfigObjectStore.objects.filter(id__in=selected_object_ids)   
+            readers_list = [ reader.get(id, None) for reader in json_logger.get('readers', None)]
+            transforms_list =  [ transforms.get(id, None) for transforms in json_logger.get('transforms', None)]
+            writers_list =  [ writers.get(id, None) for writers in json_logger.get('writers', None)]
+            stderr_writers_list =  [ stderr_writers.get(id, None) for stderr_writers in json_logger.get('stderr_writers', None)]
 
-        logger = {"readers": None,
-                "transforms":[],
-                "writers": []}
-    
-        for s in selected_objects:
-            class_name = s.class_name
-            print(class_name.lower())
-            object_json = json.loads(s.json_object)
-            if 'reader' in class_name.lower():
-                logger['readers'] = object_json
 
-            elif "transform" in class_name.lower():
-                logger['transforms'].append(object_json)
+            host_id =   json_logger.get('host_id', None)
+            interval =   json_logger.get('interval', None)
+            check_format = json_logger.get('check_format', None)
 
-            elif "writer" in class_name.lower():
-                logger['writers'].append(object_json)
+        name = request.GET.get('name')
+        description = request.GET.get('description')
+        readers_list = request.GET.getlist('readers')
+        transforms_list = request.GET.getlist('transforms')
+        writers_list = request.GET.getlist('writers')
+        stderr_writers_list = request.GET.getlist('stderr_writers')
+        host_id = request.GET.get('host_id')
+        interval = request.GET.get('interval')
+        check_format = request.GET.get('check_format')
 
+        lf = ListenerForm(
+            name=name,
+            description=description,
+            readers=readers_list,
+            transforms=transforms_list,
+            writers=writers_list,
+            stderr_writers=stderr_writers_list,
+            host_id=host_id,
+            interval=interval,
+            check_format=check_format,
+        )
+
+        
+
+        logger = {
+            'name': name,
+            'class_name': 'LoggerObject',
+            'description': description,
+            'host_id': host_id,
+            'interval': interval,
+            'check_format': check_format,
+        }
+
+        if readers_list:
+            preserved_order = Case(*[When(id=pk, then=pos) for pos, pk in enumerate(readers_list)], output_field=IntegerField())
+            reader_objects = ConfigObjectStore.objects.filter(id__in=readers_list).order_by(preserved_order)
+            logger['readers'] = [json.loads(obj.json_object) for obj in reader_objects]
+                
+        if transforms_list:
+            preserved_order = Case(*[When(id=pk, then=pos) for pos, pk in enumerate(transforms_list)], output_field=IntegerField())
+            transform_objects = ConfigObjectStore.objects.filter(id__in=transforms_list).order_by(preserved_order)
+            logger['transforms'] = [json.loads(obj.json_object) for obj in transform_objects]
+               
+        if writers_list:
+            preserved_order = Case(*[When(id=pk, then=pos) for pos, pk in enumerate(writers_list)], output_field=IntegerField())
+            writer_objects = ConfigObjectStore.objects.filter(id__in=writers_list).order_by(preserved_order)
+            logger['writers'] = [json.loads(obj.json_object) for obj in writer_objects]
+        
+        if stderr_writers_list:
+            preserved_order = Case(*[When(id=pk, then=pos) for pos, pk in enumerate(stderr_writers_list)], output_field=IntegerField())
+            stderr_writers_objects = ConfigObjectStore.objects.filter(id__in=stderr_writers_list).order_by(preserved_order)
+            logger['stderr_writers'] = [json.loads(obj.json_object) for obj in stderr_writers_objects]
+        
         complete_logger = {name: logger}
 
         logger_json = json.dumps(complete_logger, default=str, indent=2)
         logger_yaml = yaml.dump(complete_logger, sort_keys=False)
-            
-            
-        
 
-        config_objects = ConfigObjectStore.objects.order_by("-creation_time").all()
         distinct_class_names = ConfigObjectStore.objects.values_list('class_name', flat=True).distinct()
+        config_objects = {
+            "readers": ConfigObjectStore.objects.filter(class_name__icontains='reader').order_by("-creation_time").all(),
+            "transforms": ConfigObjectStore.objects.filter(class_name__icontains='transform').order_by("-creation_time").all(),
+            "writers": ConfigObjectStore.objects.filter(class_name__icontains='writer').order_by("-creation_time").all(),
+            "stderr_writers": ConfigObjectStore.objects.filter(class_name__icontains='writer').order_by("-creation_time").all(),
+        }
+
+        post_form = ConfigObjectStoreForm({            
+            'name':name,
+            'description':description,
+            'class_name':'LoggerObject',            
+            'json_object':logger_json,
+        })
 
         return render(
             request,
@@ -217,7 +276,8 @@ class LoggerBuilderView(TemplateView):
                 'class_list': distinct_class_names,
                 'logger_json': logger_json,
                 'logger_yaml': logger_yaml,
-                
+                'form': lf,
+                'post_form':post_form
             },
         )
 

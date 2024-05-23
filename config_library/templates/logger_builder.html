@@ -16,54 +16,125 @@
         {% endfor %}
     </select>
 </form> -->
-<form action>
-    <div style="display: flex; flex-direction: row; gap: 30px">
 
-        <div>
-            <table class=" table-bordered">
-                <tr>
-                    <th>ID</th>
-                    <th>NAME</th>
-                    <th>DESCRIPTION</th>
-                    <th>CLASS_NAME
+<div style="display: flex; flex-direction: row; gap: 30px; flex-wrap: wrap;">
 
-                    </th>
-                    <th>JSON_OBJECT</th>
-                    <th>CREATION_TIME</th>
-                    <th>SELECT FOR LOGGER</th>
-                </tr>
-                {%for c in config_objects %}
+    <div>
+        {% for key, value in config_objects.items %}
+        {% if forloop.first %}
+        <details open>
+            {% else %}
+            <details>
+                {% endif %}
+                <summary>{{key|upper }}</summary>
+                <h3>{{key|upper }}</h3>
+                <hr>
+                <table class=" table-bordered">
+                    <tr>
+                        <th>ID</th>
+                        <th>NAME</th>
+                        <th>DESCRIPTION</th>
+                        <th>CLASS_NAME
+
+                        </th>
+                        <th>JSON_OBJECT</th>
+                        <th>CREATION_TIME</th>
+                        <th>SELECT FOR LOGGER</th>
+                    </tr>
+                    {%for c in value %}
+                    <tr>
+                        <td><a href="{% url 'config_library:config' class_name=c.class_name id=c.id %}">{{c.id}}</a></td>
+                        <td>{{c.name}}</td>
+                        <td>{{c.description}}</td>
+                        <td>{{c.class_name}}</td>
+                        <td>
+                            <details>
+                                <summary>json</summary>
+                                <textarea cols=" 60" rows="10">{{c.json_object}}</textarea>
+                            </details>
+                        </td>
+                        <td>{{c.creation_time}}</td>
+                        <td> <input type="button" value="select" onclick="select_check({{c.id}}, '{{key|lower}}' , '{{c.id}} :{{c.name}}')"></td>
+                    </tr>
+
+                    {%endfor%}
+                </table>
+                <hr>
+            </details>
+            {%endfor%}
+    </div>
+
+    <div>
+        <div style="display: flex; flex-direction: row; gap: 30px">
+            <form>
+                <table class=" table-bordered">
 
 
-                <tr>
-                    <td><a href="{% url 'config_library:config' class_name=c.class_name id=c.id %}">{{c.id}}</a></td>
-                    <td>{{c.name}}</td>
-                    <td>{{c.description}}</td>
-                    <td>{{c.class_name}}</td>
-                    <td>
-                        <details>
-                            <summary>json</summary>
-                            <textarea cols=" 60" rows="10">{{c.json_object}}</textarea>
-                        </details>
-                    </td>
-                    <td>{{c.creation_time}}</td>
-                    <td><input type="checkbox" name='selected_object' value="{{c.id}}"></td>
-                </tr>
+                    {% for field in form.visible_fields %}
+                    <tr>
+                        <th>{{ field.label_tag }}</th>
+                        <td>
+                            {{ field.errors }}
+                            {{ field.help_text }}
+                            {{ field }}
 
-                {%endfor%}
-            </table>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% for field in form.hidden_fields %}
+                    <tr>
+                        <th>{{ field.label_tag }}</th>
+                        <td>
+                            {{ field.errors }}
+                            {{ field }}
+                            {{ field.help_text }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                </table>
+                <input type="submit" value="Submit to preview">
+            </form>
+
+            <form action="post">
+                <table class="table-bordered">
+                    {{post_form.as_table}}
+                </table>
+                <input type="submit" value="Submit to SAVE">
+            </form>
         </div>
-
-        <div>
-            <input type="submit" value="Submit">
-            <input type="text" placeholder="logger->name" name='name' pattern="^\S+$" title="No spaces allowed" required>
-            <hr>
-            <textarea cols="80" rows="60">{{logger_yaml}}</textarea>
-            <textarea cols="80" rows="60">{{logger_json}}</textarea>
-
-        </div>
+    </div>
+    <div>
+        <hr>
+        <h2>Preview</h2>
+        <textarea cols="80" rows="60">{{logger_yaml}}</textarea>
+        <textarea cols="80" rows="60">{{logger_json}}</textarea>
 
     </div>
-</form>
+</div>
+
 <hr>
+<script>
+
+    function select_check(id, class_type, name) {
+        // Create a new checkbox element
+        var checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = true; // Set as checked
+        checkbox.readOnly = true;
+        checkbox.value = id
+        checkbox.name = class_type
+        checkbox.label = name
+
+        var label = document.createElement('label');
+        label.htmlFor = 'checkbox';
+        label.appendChild(checkbox);
+        label.appendChild(document.createTextNode(name));
+
+        var div = document.createElement('div');
+        div.appendChild(label)
+        document.getElementById("id_" + class_type).appendChild(div);
+    }
+
+</script>
 {% endblock %}

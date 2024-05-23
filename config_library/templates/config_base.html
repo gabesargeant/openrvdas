@@ -14,6 +14,65 @@
             border: 1px solid black;
             padding: 2px;
         }
+
+        tr:hover {
+
+            background-color: #ffff00;
+            border-radius: 3px;
+
+        }
+        }
+
+        /* Header styling */
+        header {
+            padding: 10px 0;
+            border-bottom: 2px solid #ddd;
+        }
+
+        header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        a {
+            /* text-decoration: none; */
+            color: #333;
+            padding: 5px 15px;
+            display: block;
+            transition: background 0.3s;
+
+        }
+
+        a:hover {
+            background-color: #ddd;
+            border-radius: 3px;
+
+        }
+
+        /* Main content styling */
+        main {
+            padding: 20px;
+        }
+
+        main h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        main p {
+            margin-bottom: 10px;
+        }
+
+        html,
+        body {
+            font-family: monospace;
+            background-color: #fafafa;
+            color: #333;
+            line-height: 1.4;
+            font-size: 14px;
+            height: 100%;
+            width: 100%;
+        }
     </style>
 
 </head>
@@ -26,15 +85,16 @@
 
         </div>
         <div>
-            <h1 style="color:white">Open RVDAS Config Library</h1>
+            <h1>Open RVDAS Config Library</h1>
         </div>
     </div>
+    <main>
+        <div>
+            {% block content %}
 
-    <div>
-        {% block content %}
-
-        {% endblock %}
-    </div>
+            {% endblock %}
+        </div>
+    </main>
 </body>
 
 </html>
