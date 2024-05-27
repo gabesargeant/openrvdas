@@ -2,8 +2,6 @@
 {% block content %}
 <h1>Config Library Home</h1>
 <ol>
-    <li><a href=" {% url 'config_library:library' %}">Library</a></li>
-
     <li><a href=" {% url 'config_library:rvdas_config_objects' %}">rvdas_config_objects</a></li>
 </ol>
 
@@ -81,6 +79,10 @@
         <h2>Configure a Logger</h2>
         <ul>
             <li><a href=" {% url 'config_library:logger_builder' %} ">Configure a Logger </a></li>
+        </ul>
+        <h2>Configure a ComposedReader</h2>
+        <ul>
+            <li><a href=" {% url 'config_library:logger_builder' %} ">Configure a ComposedReader </a></li>
         </ul>
     </div>
 </div>

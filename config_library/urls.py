@@ -11,11 +11,11 @@ app_name = "config_library"
 
 urlpatterns = [
     path("", views.index, name="index"),
-    path("library", views.library, name="library"),
+    
     path("rvdas_config_objects", views.RVDASConfigObjects.as_view(), name="rvdas_config_objects"),
     # Build a Logger
-    path("config/logger/", views.LoggerBuilderView.as_view(), name='logger_builder'),
-    path("config/logger/<id>", views.LoggerBuilderView.as_view(), name='logger_builder'),
+    path("config/LoggerObject/", views.LoggerBuilderView.as_view(), name='logger_builder'),
+    path("config/LoggerObject/<id>", views.LoggerBuilderView.as_view(), name='logger_builder'),
     # Complex Readers
     path("config/CachedDataReader/", views.CachedDataReaderView.as_view(), name="cached_data_reader"),
     path("config/CachedDataReader/<id>", views.CachedDataReaderView.as_view(), name="cached_data_reader"),

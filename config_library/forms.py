@@ -1,13 +1,8 @@
 from django import forms
-from .models import LibraryCollection, ConfigObjectStore
+from .models import  ConfigObjectStore
 from django.core.exceptions import ValidationError
 from django.db.models import Case, When, IntegerField
 
-
-class LibraryCollectionForm(forms.ModelForm):
-    class Meta:
-        model = LibraryCollection
-        fields = ["collection_name", "description"]
 
 
 class ConfigObjectStoreForm(forms.ModelForm):
@@ -30,12 +25,8 @@ class BaseRVDASConfigForm(forms.Form):
 
 
 READER_CHOICES = []
-
 TRANSFORM_CHOICES = []
-
 WRITER_CHOICES = []
-
-
 STDERR_WRITER_CHOICES = []
 
 
