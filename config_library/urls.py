@@ -16,6 +16,10 @@ urlpatterns = [
     # Build a Logger
     path("config/LoggerObject/", views.LoggerBuilderView.as_view(), name='logger_builder'),
     path("config/LoggerObject/<id>", views.LoggerBuilderView.as_view(), name='logger_builder'),
+    #Composed Reader / Composed Writer
+    path("config/ComposedReader/", views.ComposedReaderView.as_view(), name='composed_reader'),
+    path("config/ComposedReader/<id>", views.ComposedReaderView.as_view(), name='composed_reader'),
+
     # Complex Readers
     path("config/CachedDataReader/", views.CachedDataReaderView.as_view(), name="cached_data_reader"),
     path("config/CachedDataReader/<id>", views.CachedDataReaderView.as_view(), name="cached_data_reader"),

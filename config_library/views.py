@@ -1,12 +1,10 @@
 from django.shortcuts import render, redirect
 from django.db.models import Case, When, IntegerField
-from django.http import QueryDict
-from .forms import  ConfigObjectStoreForm
-from django.urls import reverse
+
 from .models import  ConfigObjectStore
 from django.views.generic import TemplateView
 from django.shortcuts import get_object_or_404
-from .forms import ListenerForm
+from .forms import ListenerForm, ConfigObjectStoreForm, ComposedReaderForm
 from .reader_forms import (
     CachedDataReaderForm,
     SubscriptionFields,
@@ -76,6 +74,7 @@ import json
 
 import yaml
 
+#Used by the generic KWARGS form
 class_form_dict = {
     "DatabaseReader": DatabaseReaderForm,
     "LogFileReader": LogFileReaderForm,
@@ -163,14 +162,12 @@ class LoggerBuilderView(TemplateView):
         id = kwargs.get("id", None)
 
         # neat trick
-        name = description = host_id = interval = check_format = None
+        name = description = host_id = interval = None
+        check_format = False
         readers_list = transforms_list = writers_list = stderr_writers_list = []
-
+        conf_obj = None
         if id is not None:
-            conf_obj = get_object_or_404(ConfigObjectStore, id=id)
-            print(conf_obj.__dict__)
-            print(conf_obj)
-            print(type(conf_obj))
+            conf_obj = get_object_or_404(ConfigObjectStore, id=id)            
             name = conf_obj.name            
             description = conf_obj.description
             json_logger = json.loads(conf_obj.json_object)
@@ -204,9 +201,11 @@ class LoggerBuilderView(TemplateView):
         if request.GET.get('interval') is not None:
             interval = request.GET.get('interval')
         if request.GET.get('check_format') is not None:
-            check_format = request.GET.get('check_format')
+            check_format = request.GET.get('check_format', False)            
+            if check_format == 'on':
+                check_format = True
 
-        print(readers_list)
+        
         lf = ListenerForm(
             name=name,
             description=description,
@@ -217,6 +216,7 @@ class LoggerBuilderView(TemplateView):
             host_id=host_id,
             interval=interval,
             check_format=check_format,
+            id=id
         )
 
         logger = {
@@ -261,12 +261,13 @@ class LoggerBuilderView(TemplateView):
             "stderr_writers": ConfigObjectStore.objects.filter(class_name__icontains='writer').order_by("-creation_time").all(),
         }
 
-        post_form = ConfigObjectStoreForm(
-            {
+        post_form = ConfigObjectStoreForm(          {
                 'name': name,
                 'description': description,
                 'class_name': 'LoggerObject',
                 'json_object': logger_json,
+                'id':id,
+                
             }
         )
 
@@ -279,6 +280,130 @@ class LoggerBuilderView(TemplateView):
                 'logger_json': logger_json,
                 'logger_yaml': logger_yaml,
                 'form': lf,
+                'post_form': post_form,
+            },
+        )
+
+    def post(self, request, *args, **kwargs):
+        instance_id = kwargs.get("id", None)
+        form = ConfigObjectStoreForm(request.POST)
+        print(form.data)
+        if form.is_valid():           
+            try:
+                if instance_id is not None:
+                    instance_id = int(instance_id)
+                    obj = ConfigObjectStore.objects.get(id=instance_id)
+                else:
+                    raise ValueError("Instance ID is None")
+            except (ValueError, ConfigObjectStore.DoesNotExist):
+                obj = ConfigObjectStore()
+
+            obj.description = form.cleaned_data.get("description")
+            obj.json_object = form.cleaned_data.get('json_object')
+            obj.class_name = form.cleaned_data.get('class_name')
+            obj.name = form.cleaned_data.get("name")
+            obj.save()
+
+            return redirect("config_library:logger_builder", id=obj.id)
+
+        return redirect("config_library:logger_builder")
+
+
+
+class ComposedReaderView(TemplateView):
+    template_name = "composed_reader.html"
+
+    def get(self, request, *args, **kwargs):
+        id = kwargs.get("id", None)
+
+        # neat trick
+        name = description = None 
+        check_format = False
+        readers_list = transforms_list  = []
+
+        if id is not None:
+            conf_obj = get_object_or_404(ConfigObjectStore, id=id)            
+            name = conf_obj.name            
+            description = conf_obj.description
+            json_logger = json.loads(conf_obj.json_object)
+
+            readers_list = [reader.get('ObjectStoreId', None) for reader in json_logger.get('readers', [])]            
+            transforms_list = [transforms.get('ObjectStoreId', None) for transforms in json_logger.get('transforms', [])]           
+            
+            check_format = json_logger.get('check_format', None)
+
+        # We take the original data and replace with new request data if present.
+        # we use request.get to test if the query param exists
+        # if you use request.GET.getlist you get empty lists for non existant objects
+        if request.GET.get('name') is not None:
+            name = request.GET.get('name')
+        if request.GET.get('description') is not None:
+            description = request.GET.get('description')
+        if request.GET.get('readers') is not None:            
+            readers_list = request.GET.getlist('readers')
+        if request.GET.get('transforms') is not None:
+            transforms_list = request.GET.getlist('transforms')        
+        if request.GET.get('check_format') is not None:
+            check_format = request.GET.get('check_format', False)            
+            if check_format == 'on':
+                check_format = True
+
+        print(id)
+        crf = ComposedReaderForm(
+            name=name,
+            description=description,
+            readers=readers_list,
+            transforms=transforms_list,           
+            check_format=check_format,
+            id = id
+        )
+
+        logger = {
+            'name': name,
+            'class_name': 'ComposedReader',
+            'description': description,
+            'check_format': check_format,
+        }
+
+        if readers_list:
+            preserved_order = Case(*[When(id=pk, then=pos) for pos, pk in enumerate(readers_list)], output_field=IntegerField())
+            reader_objects = ConfigObjectStore.objects.filter(id__in=readers_list).order_by(preserved_order)
+            logger['readers'] = [json.loads(obj.json_object) for obj in reader_objects]
+
+        if transforms_list:
+            preserved_order = Case(*[When(id=pk, then=pos) for pos, pk in enumerate(transforms_list)], output_field=IntegerField())
+            transform_objects = ConfigObjectStore.objects.filter(id__in=transforms_list).order_by(preserved_order)
+            logger['transforms'] = [json.loads(obj.json_object) for obj in transform_objects]
+     
+
+        logger_json = json.dumps(logger, default=str, indent=2)
+        logger_yaml = yaml.dump(logger, sort_keys=False)
+
+        distinct_class_names = ConfigObjectStore.objects.values_list('class_name', flat=True).distinct()
+        config_objects = {
+            "readers": ConfigObjectStore.objects.filter(class_name__icontains='reader').order_by("-creation_time").all(),
+            "transforms": ConfigObjectStore.objects.filter(class_name__icontains='transform').order_by("-creation_time").all(),
+        }
+
+        post_form = ConfigObjectStoreForm(
+            {
+                'name': name,
+                'description': description,
+                'class_name': 'ComposedReader',
+                'json_object': logger_json,
+                'id':id
+            }
+        )
+
+        return render(
+            request,
+            self.template_name,
+            {
+                "config_objects": config_objects,
+                'class_list': distinct_class_names,
+                'logger_json': logger_json,
+                'logger_yaml': logger_yaml,
+                'form': crf,
                 'post_form': post_form,
             },
         )
@@ -304,9 +429,10 @@ class LoggerBuilderView(TemplateView):
             obj.name = form.cleaned_data.get("name")
             obj.save()
 
-            return redirect("config_library:logger_builder", id=obj.id)
+            return redirect("config_library:composed_reader", id=obj.id)
 
-        return redirect("config_library:logger_builder")
+        return redirect("config_library:composed_reader")
+
 
 
 class BaseKwargsFormView(TemplateView):

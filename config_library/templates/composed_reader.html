@@ -1,21 +1,13 @@
 {% extends 'config_base.html' %}
 {% block content %}
-<h1>Logger Builder</h1>
+<h1>Composed Reader Builder</h1>
 <ul>
     <li>Note, the underlying storage of objects is in JSON. The conversion to YAML is just for humans.</li>
     <li>When you selete a object via its' ID you're editing that object. </li>
-    <li>There's not history yet </li>
+    <li>There's no history yet so don't be too rash.</li>
 
 </ul>
 <hr>
-<!-- <form action>
-    <select name=class_name_select onchange="this.form.submit()">
-        <option selected disabled>All default</option>
-        {% for option in class_list %}
-        <option>{{ option }}</option>
-        {% endfor %}
-    </select>
-</form> -->
 
 <div style="display: flex; flex-direction: row; gap: 30px; flex-wrap: wrap;">
 
@@ -99,29 +91,7 @@
             <form method="post">
                 <table class="table-bordered">
                     {% csrf_token %}
-
-                    {% for field in post_form.visible_fields %}
-                    <tr>
-                        <th>{{ field.label_tag }}</th>
-                        <td>
-                            {{ field.errors }}
-                            {{ field.help_text }}
-                            {{ field }}
-
-                        </td>
-                    </tr>
-                    {% endfor %}
-                    {% for field in form.hidden_fields %}
-                    <tr>
-                        <th>{{ field.label_tag }}</th>
-                        <td>
-                            {{ field.errors }}
-                            {{ field }}
-                            {{ field.help_text }}
-                        </td>
-                    </tr>
-                    {% endfor %}
-
+                    {{post_form.as_table}}
                 </table>
                 <input type="submit" value="Submit to SAVE">
             </form>
