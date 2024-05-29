@@ -8,23 +8,15 @@ from django.db.models import Case, When, IntegerField
 class ConfigObjectStoreForm(forms.ModelForm):
     class Meta:
         model = ConfigObjectStore
-        fields = [ "id", "name", "description", "class_name", "json_object"]
-        widgets = {            
-             'id': forms.TextInput(attrs={'readonly': 'readonly'}),
-        }
-        
+        fields = [  "name", "description", "class_name", "json_object"]
+       
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # fields read-only
         self.fields["name"].widget.attrs["readonly"] = True
         self.fields["class_name"].widget.attrs["readonly"] = True
         self.fields["json_object"].widget.attrs["readonly"] = True
-        print(self.fields)
-        print("testtesttetste")
-        
-
-    
-    
+            
 
 class BaseRVDASConfigForm(forms.Form):
     name = forms.CharField(required=False)
@@ -57,12 +49,7 @@ class ListenerForm(BaseRVDASConfigForm):
         interval = kwargs.pop('interval', None)
         check_format = kwargs.pop('check_format', None)
         
-        id = kwargs.pop('id', None)
-
         super(ListenerForm, self).__init__(*args, **kwargs)
-
-        if id:
-            self.fields['id'].initial = id
 
         if name:
             self.fields['name'].initial = name
@@ -158,5 +145,47 @@ class ComposedReaderForm(BaseRVDASConfigForm):
             self.fields['check_format'].initial = check_format
 
     readers = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, required=False, help_text="Selected readers.")
+    transforms = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, required=False, help_text="Selected transforms.")   
+    check_format = forms.BooleanField(required=False, help_text="Check this box to check the format.")
+
+class ComposedWriterForm(BaseRVDASConfigForm):
+    def __init__(self, *args, **kwargs):
+        # Extract custom arguments
+        name = kwargs.pop('name', None)
+        description = kwargs.pop('description', None)
+
+        # objects
+        writers = kwargs.pop('writers', None)
+        transforms = kwargs.pop('transforms', None)                
+        check_format = kwargs.pop('check_format', False)
+        
+
+        super(ComposedWriterForm, self).__init__(*args, **kwargs)
+
+        if name:
+            self.fields['name'].initial = name
+        if description:
+            self.fields['description'].initial = description
+
+        # config
+        if writers:
+            preserved_order = Case(*[When(id=pk, then=pos) for pos, pk in enumerate(writers)], output_field=IntegerField())
+            writer_objects = ConfigObjectStore.objects.filter(id__in=writers).order_by(preserved_order)
+            self.fields['writers'].choices = [(obj.id, f"{obj.id} : {obj.name}") for obj in writer_objects]
+            self.fields['writers'].initial = [obj.id for obj in writer_objects]
+        else:
+            self.fields['writers'].choices = []
+        if transforms:
+            preserved_order = Case(*[When(id=pk, then=pos) for pos, pk in enumerate(transforms)], output_field=IntegerField())
+            transform_objects = ConfigObjectStore.objects.filter(id__in=transforms).order_by(preserved_order)
+            self.fields['transforms'].choices = [(obj.id, f"{obj.id} : {obj.name}") for obj in transform_objects]
+            self.fields['transforms'].initial = [obj.id for obj in transform_objects]
+        else:
+            self.fields['transforms'].choices = []
+
+        if check_format:
+            self.fields['check_format'].initial = check_format
+
+    writers = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, required=False, help_text="Selected writers.")
     transforms = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, required=False, help_text="Selected transforms.")   
     check_format = forms.BooleanField(required=False, help_text="Check this box to check the format.")

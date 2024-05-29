@@ -268,22 +268,63 @@ configs:
     name: PCOD-off
 
   PCOD-net:
-    name: PCOD-net
-    readers:                    # Read from serial port
-    - class: SerialReader
+    name: PCOD->Net
+    class_name: LoggerObject
+    description: PCOD->Net
+    host_id: ''
+    interval: '0'
+    check_format: false
+    readers:
+    - name: SerialReader
+      class: SerialReader
       kwargs:
-        baudrate: 4800
-        port: /tmp/tty_PCOD
-    transforms:                 # Add timestamp and logger label
-    - class: TimestampTransform
-    - class: PrefixTransform
+        port: '9876'
+        baudrate: 9600
+        bytesize: 8
+        parity: N
+        stopbits: 1
+        timeout: 4.0
+        xonxoff: true
+        rtscts: false
+        write_timeout: 3.0
+        dsrdtr: true
+        exclusive: true
+        max_bytes: 16584
+        eol: \n
+        encoding: utf-8
+        encoding_errors: ignore
+      ObjectStoreId: 152
+    transforms:
+    - name: TSTFM
+      class: TimestampTransform
+      kwargs:
+        time_format: '%Y-%m-%dT%H:%M:%S.%fZ'
+        time_zone: UTC
+        sep: ''
+      ObjectStoreId: 155
+    - name: PrefixTransformPCOD
+      class: PrefixTransform
       kwargs:
         prefix: PCOD
+        sep: ''
+        quiet: false
+      ObjectStoreId: 153
     writers:
-    - class: UDPWriter
+    - name: UDPWriter
+      class: UDPWriter
       kwargs:
-        port: 6224
         destination: 255.255.255.255
+        port: 6224
+        mc_interface: ''
+        mc_ttl: 3
+        num_retry: 2
+        warning_limit: 5
+        eol: \n
+        reuseaddr: true
+        reuseport: true
+        encoding: utf-8
+        encoding_errors: ignore
+      ObjectStoreId: 154
 
   PCOD-net+file:
     name: PCOD-net+file

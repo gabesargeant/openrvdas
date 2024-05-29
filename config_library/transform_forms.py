@@ -181,7 +181,7 @@ class PrefixTransformForm(BaseRVDASConfigForm):
 
     # kwargs
     prefix = forms.CharField(required=False, label="Prefix")
-    sep = forms.CharField(initial=" ", label="Separator")
+    sep = forms.CharField(initial="", label="Separator", required=False)
     quiet = forms.BooleanField(required=False, initial=False, label="Quiet")
 
 
@@ -242,7 +242,7 @@ class TimestampTransformForm(BaseRVDASConfigForm):
     # kwargs
     time_format = forms.CharField(initial=timestamp.TIME_FORMAT, label="Time Format")
     time_zone = forms.CharField(initial=timestamp.timezone.utc, label="Time Zone")
-    sep = forms.CharField(initial=" ", label="Separator")
+    sep = forms.CharField(initial=" ", label="Separator", required=False)
 
 
 class ToDasRecordTransformForm(BaseRVDASConfigForm):

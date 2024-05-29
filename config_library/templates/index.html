@@ -25,6 +25,10 @@
             <li><a href=" {% url 'config_library:config' class_name='TimeoutReader' %}">TimeoutReader</a></li>
             <li><a href=" {% url 'config_library:config' class_name='UdpReader' %}">UdpReader</a></li>
             <li><a href=" {% url 'config_library:config' class_name='WebsocketReader' %}">WebsocketReader</a></li>
+            <h2>Configure a ComposedReader</h2>
+            <ul>
+                <li><a href=" {% url 'config_library:composed_reader' %} ">Configure a ComposedReader </a></li>
+            </ul>
         </ul>
 
         <h2>Configure a Transform</h2>
@@ -72,18 +76,21 @@
             <li><a href=" {% url 'config_library:config' class_name='TimeoutWriter' %} "> TimeoutWriter </a></li>
             <li><a href=" {% url 'config_library:config' class_name='UDPWriter' %} "> UDPWriter </a></li>
             <li><a href=" {% url 'config_library:config' class_name='WebsocketWriter' %} "> WebsocketWriter </a></li>
+            <h2>Configure a ComposedWriter</h2>
+            <ul>
+                <li><a href=" {% url 'config_library:composed_writer' %} ">Configure a ComposedWriter </a></li>
+            </ul>
 
         </ul>
     </div>
     <div>
-        <h2>Configure a Logger</h2>
+        <h2>Configure a Config, ie a Logger</h2>
         <ul>
             <li><a href=" {% url 'config_library:logger_builder' %} ">Configure a Logger </a></li>
         </ul>
-        <h2>Configure a ComposedReader</h2>
-        <ul>
-            <li><a href=" {% url 'config_library:composed_reader' %} ">Configure a ComposedReader </a></li>
-        </ul>
+
+
+
     </div>
 </div>
 
