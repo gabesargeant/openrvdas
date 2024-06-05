@@ -155,8 +155,8 @@ class RVDASConfigObjects(TemplateView):
         return redirect("config_library:rvdas_config_objects")
 
 
-class LoggerBuilderView(TemplateView):
-    template_name = "logger_builder.html"
+class ListenerBuilderView(TemplateView):
+    template_name = "listener_builder.html"
 
     def get(self, request, *args, **kwargs):
         id = kwargs.get("id", None)
@@ -264,7 +264,7 @@ class LoggerBuilderView(TemplateView):
         post_form = ConfigObjectStoreForm(          {
                 'name': name,
                 'description': description,
-                'class_name': 'LoggerObject',
+                'class_name': 'ListenerObject',
                 'json_object': logger_json,
                 
                 
@@ -304,9 +304,9 @@ class LoggerBuilderView(TemplateView):
             obj.name = form.cleaned_data.get("name")
             obj.save()
 
-            return redirect("config_library:logger_builder", id=obj.id)
+            return redirect("config_library:listener_builder", id=obj.id)
 
-        return redirect("config_library:logger_builder")
+        return redirect("config_library:listener_builder")
 
 
 
@@ -881,3 +881,6 @@ class InterpolationTransformView(TemplateView):
 
             return redirect("config_library:config", class_name=class_name, id=obj_id)
         return redirect("config_library:config")
+
+
+

@@ -189,3 +189,31 @@ class ComposedWriterForm(BaseRVDASConfigForm):
     writers = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, required=False, help_text="Selected writers.")
     transforms = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, required=False, help_text="Selected transforms.")   
     check_format = forms.BooleanField(required=False, help_text="Check this box to check the format.")
+
+class LoggerForm(BaseRVDASConfigForm):
+    def __init__(self, *args, **kwargs):
+        # Extract custom arguments
+        name = kwargs.pop('name', None)
+        description = kwargs.pop('description', None)
+
+        # objects
+        listeners = kwargs.pop('listeners', None)
+
+        super(BaseRVDASConfigForm, self).__init__(*args, **kwargs)
+
+        if name:
+            self.fields['name'].initial = name
+        if description:
+            self.fields['description'].initial = description
+
+        # config
+        if listeners:
+            preserved_order = Case(*[When(id=pk, then=pos) for pos, pk in enumerate(listeners)], output_field=IntegerField())
+            reader_objects = ConfigObjectStore.objects.filter(id__in=listeners).order_by(preserved_order)
+            self.fields['listeners'].choices = [(obj.id, f"{obj.id} : {obj.name}") for obj in reader_objects]
+            self.fields['listeners'].initial = [obj.id for obj in reader_objects]
+        else:
+            self.fields['listeners'].choices = []
+        
+    listeners = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, required=False, help_text="Selected Listeners.")
+    

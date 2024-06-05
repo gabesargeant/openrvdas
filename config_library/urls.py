@@ -11,11 +11,11 @@ app_name = "config_library"
 
 urlpatterns = [
     path("", views.index, name="index"),
-    
+  
     path("rvdas-config-objects", views.RVDASConfigObjects.as_view(), name="rvdas_config_objects"),
     # Build a Logger
-    path("config/LoggerObject/", views.LoggerBuilderView.as_view(), name='logger_builder'),
-    path("config/LoggerObject/<id>", views.LoggerBuilderView.as_view(), name='logger_builder'),
+    path("config/ListenerObject/", views.ListenerBuilderView.as_view(), name='logger_builder'),
+    path("config/ListenerObject/<id>", views.ListenerBuilderView.as_view(), name='logger_builder'),
     #Composed Reader / Composed Writer
     path("config/ComposedReader/", views.ComposedReaderView.as_view(), name='composed_reader'),
     path("config/ComposedReader/<id>", views.ComposedReaderView.as_view(), name='composed_reader'),
@@ -31,4 +31,5 @@ urlpatterns = [
     # KWARG Forms, this is the most generic case and needs to be at the end to match AFTER special cases have been scanned.
     path("config/<class_name>/", views.BaseKwargsFormView.as_view(), name="config"),
     path("config/<class_name>/<id>", views.BaseKwargsFormView.as_view(), name="config"),
+    
 ]

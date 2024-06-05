@@ -6,7 +6,7 @@
 </ol>
 
 <div style="display: flex; flex-direction: row; gap: 30px">
-    <div>
+    <div class="pannel">
         <h2>Configure a Reader</h2>
         <ul>
 
@@ -83,13 +83,21 @@
 
         </ul>
     </div>
-    <div>
-        <h2>Configure a Config, ie a Logger</h2>
+    <div class="pannel">
+        <h2>Configure a Listener</h2>
+        Ie, a config, that will be part of a set of listeners making up a Logger
+
         <ul>
-            <li><a href=" {% url 'config_library:logger_builder' %} ">Configure a Logger </a></li>
+            <li><a href=" {% url 'config_library:logger_builder' %} ">Configure a Listner </a></li>
         </ul>
+        <h2>Configure a Logger</h2>
+        Ie, a bag of configs, that make a Logger
 
-
+        <ul>
+            <li><a href=" {% url 'config_library:logger_builder' %} ">Configure a Listner </a></li>
+        </ul>
+    </div>
+    <div>
 
     </div>
 </div>
